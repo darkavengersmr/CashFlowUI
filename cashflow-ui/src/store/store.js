@@ -12,7 +12,11 @@ export default createStore({
         password: "",
         token: "",
       },
-      userid: 0,
+      user: {},
+      inflow: {},
+      inflowRegular: {},
+      outflow: {},
+      outflowRegular: {},
     };
   },
   mutations: mutations,

@@ -11,7 +11,19 @@ export default {
     setToken(state, payload) {
         state.auth.token = payload;
     },
-    setUserid(state, payload) {
-        state.userid = payload;
+    setUser(state, payload) {
+        state.user = payload;
+    },
+    setInflow(state, payload) {
+        state.inflow = payload;
+    },
+    setInflowRegular(state, payload) {
+        state.inflowRegular = payload;
+    },
+    setOutflow(state, payload) {
+        state.outflow = payload;
+    },
+    setOutflowRegular(state, payload) {
+        state.outflowRegular = payload;
     },
 }

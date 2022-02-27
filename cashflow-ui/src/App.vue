@@ -1,12 +1,16 @@
 <template>
-  <div class="card" v-if="authorized">
+  <div class="card">
+  <h3>{{inflowRegular}}</h3>
+  <button @click="test">test</button>
+  </div>
+  <div class="card" v-if="!authorized">
   <br />
   <h2>Cashflow</h2>  
   <nav>    
     <router-link to="/">Войти</router-link> |
     <router-link to="/register">Зарегистрироваться</router-link>
   </nav>
-  <router-view/>
+  <router-view/>  
   </div>
 </template>
 
@@ -21,20 +25,29 @@ export default {
   computed: {
     ...mapState({
       authorized: "authorized",
-      userid: "userid",
+      user: "user",
+      inflow: "inflow",
+      inflowRegular: "inflowRegular",
+      outflow: "outflow",
+      outflowRegular: "outflowRegular",
     }),
   },
   methods: {
     ...mapMutations({
       setAuthorized: "setAuthorized",
+      setUserid: "setUserid",
     }),
     ...mapActions({      
       getToken: "getToken",
-      getUserInfo: "getUserInfo",
+      getTokenFromCookie: "getTokenFromCookie",
+      getObj: "getObj",
     }),
+    test(){
+      this.getObj({url: '/inflow_regular/', storepoint: "setInflowRegular"});
+    }
   },
   mounted() {
-    this.getUserInfo();    
+    this.getTokenFromCookie();
   },
   components: {
   },

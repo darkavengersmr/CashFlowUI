@@ -19,7 +19,6 @@ export default {
                 if (response.data.access_token.length > 10) {
                     VueCookies.set("username", username, -1);
                     VueCookies.set("token", response.data.access_token, -1);
-                    //console.log("Token : " + response.data.access_token);
                 }
             }
             return true;
@@ -29,26 +28,56 @@ export default {
                 return false;
             });
     },
-    async getUserInfo(context) {
-        let token = await VueCookies.get("token");
-
-        if (token != null) {
+    getTokenFromCookie(context) {
+        if (this.state.auth.token == "") {
+            context.commit("setToken", VueCookies.get("token"));
+        }
+    },
+    getObj(context, { url, storepoint }) {
+        if (this.state.user.id != undefined) {
+            axios({
+                method: 'get',
+                url: '/users/' + this.state.user.id + url,
+                headers: {
+                    "accept": "application/json",
+                    "Authorization": "Bearer " + this.state.auth.token
+                },
+            }).then(response => {
+                context.commit(storepoint, response.data);
+                return true;
+            })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        context.commit("setAuthorized", false);
+                    }
+                    return false;
+                });
+        }
+        else {
             axios({
                 method: 'get',
                 url: '/user',
                 headers: {
                     "accept": "application/json",
-                    "Authorization": "Bearer " + token
+                    "Authorization": "Bearer " + this.state.auth.token
                 },
-            }).then(function (response) {
-                if (response != undefined && response.status === 200) {
-                    context.commit("setUserid", response.data.id);
-                }
+            }).then((user) => {
+                context.commit("setUser", user.data)
+                return axios({
+                    method: 'get',
+                    url: '/users/' + user.data.id + url,
+                    headers: {
+                        "accept": "application/json",
+                        "Authorization": "Bearer " + this.state.auth.token
+                    },
+                })
+            }).then(response => {
+                context.commit(storepoint, response.data);
                 return true;
             })
-                .catch(function (error) {
+                .catch(error => {
                     if (error.response.status === 401) {
-                    context.commit("setAuthorized", false);
+                        context.commit("setAuthorized", false);
                     }
                     return false;
                 });

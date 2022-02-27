@@ -1,18 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '../components/LoginForm.vue'
-import RegView from '../components/RegForm.vue'
+import LoginFormView from '../views/LoginFormView.vue'
+import RegFormView from '../views/RegFormView.vue'
 
 
 const routes = [
   {
     path: '/',
     name: 'login',
-    component: LoginView
+    component: LoginFormView
   },
   {
     path: '/register',
     name: 'register',
-    component: RegView
+    component: RegFormView
   }
 ]
 
