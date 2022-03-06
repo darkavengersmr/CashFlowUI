@@ -1,16 +1,13 @@
 <template>
-  <div class="card">
-  <h3>{{inflowRegular}}</h3>
-  <button @click="test">test</button>
-  </div>
-  <div class="card" v-if="!authorized">
-  <br />
-  <h2>Cashflow</h2>  
+  <div class="card" id="app">
+  <h2 v-if="!authorized">Cashflow</h2>  
   <nav>    
-    <router-link to="/">Войти</router-link> |
-    <router-link to="/register">Зарегистрироваться</router-link>
+    <router-link v-if="!authorized" to="/login">Войти</router-link><span v-if="!authorized"> | </span>
+    <router-link v-if="!authorized" to="/register">Зарегистрироваться</router-link>
+    <router-link v-if="authorized" to="/inflow">Доходы</router-link><span v-if="authorized"> | </span>
+    <router-link v-if="authorized" to="/outflow">Расходы</router-link>
   </nav>
-  <router-view/>  
+  <router-view/> 
   </div>
 </template>
 
@@ -30,7 +27,7 @@ export default {
       inflowRegular: "inflowRegular",
       outflow: "outflow",
       outflowRegular: "outflowRegular",
-    }),
+    }),    
   },
   methods: {
     ...mapMutations({
@@ -42,12 +39,16 @@ export default {
       getTokenFromCookie: "getTokenFromCookie",
       getObj: "getObj",
     }),
-    test(){
-      this.getObj({url: '/inflow_regular/', storepoint: "setInflowRegular"});
-    }
   },
   mounted() {
-    this.getTokenFromCookie();
+    this.getTokenFromCookie().then(() => {
+      return this.getObj({url: '/inflow/', storepoint: 'setInflow'}) 
+    })
+    .then(() => {
+      return this.$router.push({ name: 'inflow' }) 
+    });
+    //this.getTokenFromCookie();
+    //this.getObj({url: '/inflow/', storepoint: 'setInflow'});
   },
   components: {
   },
