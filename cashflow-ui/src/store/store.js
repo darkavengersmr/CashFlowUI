@@ -10,7 +10,7 @@ export default createStore({
       auth: {
         username: "",
         password: "",
-        token: "",
+        token: "",   
       },
       user: {},
       inflow: undefined,

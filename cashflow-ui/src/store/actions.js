@@ -59,4 +59,60 @@ export default {
                 });
         }
     },
+    createObj(context, { url, storepoint, obj }) {        
+        if (this.state.user.id != undefined) {
+            api.createObject({token: this.state.auth.token, user_id: this.state.user.id, url: url, obj: obj})
+            .then(response => {                
+                context.commit(storepoint, response.data);
+            })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        context.commit("setAuthorized", false);
+                        router.push({ name: 'login' });
+                    }
+                });
+        }
+        else {
+            api.readUserId(this.state.auth.token).then((user) => {
+                context.commit("setUser", user.data)
+                return api.createObject({token: this.state.auth.token, user_id: this.state.user.id, url: url, obj: obj})
+            }).then(response => {                
+                context.commit(storepoint, response.data);
+            })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        context.commit("setAuthorized", false);
+                        router.push({ name: 'login' });
+                    }
+                });
+        }
+    },
+    deleteObj(context, { url, storepoint, id, params }) {        
+        if (this.state.user.id != undefined) {
+            api.deleteObject({token: this.state.auth.token, user_id: this.state.user.id, url: url, params: params})
+            .then(() => {                            
+                context.commit(storepoint, id);
+            })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        context.commit("setAuthorized", false);
+                        router.push({ name: 'login' });
+                    }
+                });
+        }
+        else {
+            api.readUserId(this.state.auth.token).then((user) => {
+                context.commit("setUser", user.data)
+                return api.deleteObject({token: this.state.auth.token, user_id: this.state.user.id, url: url, params: params})
+            }).then(() => {                
+                context.commit(storepoint, id);
+            })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        context.commit("setAuthorized", false);
+                        router.push({ name: 'login' });
+                    }
+                });
+        }
+    },
 }

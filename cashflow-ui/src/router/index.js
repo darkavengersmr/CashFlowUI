@@ -31,6 +31,21 @@ const routes = [
     path: '/outflow',
     name: 'outflow',
     component: OutflowFormView
+  },
+  {
+    path: '/assets',
+    name: 'assets',
+    component: undefined
+  },
+  {
+    path: '/liabilities',
+    name: 'liabilities',
+    component: undefined
+  },
+  {
+    path: '/preferences',
+    name: 'preferences',
+    component: undefined
   }
 ]
 

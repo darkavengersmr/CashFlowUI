@@ -31,5 +31,28 @@ export default {
           "Authorization": "Bearer " + token
       },
   })
-  }  
+  },
+  createObject({token, user_id, url, obj}) {
+    return axios({
+      method: 'post',
+      url: '/users/' + user_id + url,
+      headers: {
+          "accept": "application/json",
+          "Authorization": "Bearer " + token
+      },
+     data: obj 
+  })
+  }
+  ,
+  deleteObject({token, user_id, url, params}) {
+    return axios({
+      method: 'delete',
+      url: '/users/' + user_id + url,
+      headers: {
+          "accept": "application/json",
+          "Authorization": "Bearer " + token
+      },
+      params: params 
+  })
+  }
 }

@@ -1,11 +1,14 @@
-<template>
-  <div class="card" id="app">
+<template>  
+  <div class="card">
   <h2 v-if="!authorized">Cashflow</h2>  
   <nav>    
     <router-link v-if="!authorized" to="/login">Войти</router-link><span v-if="!authorized"> | </span>
     <router-link v-if="!authorized" to="/register">Зарегистрироваться</router-link>
     <router-link v-if="authorized" to="/inflow">Доходы</router-link><span v-if="authorized"> | </span>
-    <router-link v-if="authorized" to="/outflow">Расходы</router-link>
+    <router-link v-if="authorized" to="/outflow">Расходы</router-link><span v-if="authorized"> | </span>
+    <router-link v-if="authorized" to="/assets">Активы</router-link><span v-if="authorized"> | </span>
+    <router-link v-if="authorized" to="/liabilities">Пассивы</router-link><span v-if="authorized"> | </span>
+    <router-link v-if="authorized" to="/preferences">Настройки</router-link>
   </nav>
   <router-view/> 
   </div>
