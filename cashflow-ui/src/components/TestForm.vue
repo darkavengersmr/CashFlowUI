@@ -3,18 +3,12 @@
 </template>
 
 <script>
-
 export default {
-  props: {
-
-  },
+  props: {},
   data() {
-    return {
-    };
+    return {};
   },
-  computed: {
-  },
-  methods: {
-  },
+  computed: {},
+  methods: {},
 };
 </script>

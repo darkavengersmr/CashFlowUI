@@ -1,13 +1,14 @@
 <template>
   <div class="card">
-    <LoginForm 
-        :username="auth.username"
-        @clickBtnLogin="
-          getToken({            
-            username: $event.username,
-            password: $event.password,
-          })
-        "/>
+    <LoginForm
+      :username="auth.username"
+      @clickBtnLogin="
+        getToken({
+          username: $event.username,
+          password: $event.password,
+        })
+      "
+    />
   </div>
 </template>
 
@@ -15,12 +16,12 @@
 import { mapState, mapMutations, mapActions } from "vuex";
 
 // @ is an alias to /src
-import LoginForm from '@/components/LoginForm.vue'
+import LoginForm from "@/components/LoginForm.vue";
 
 export default {
-  name: 'LoginFormView',
+  name: "LoginFormView",
   components: {
-    LoginForm
+    LoginForm,
   },
   data() {
     return {};
@@ -31,11 +32,10 @@ export default {
     }),
   },
   methods: {
-    ...mapMutations({
-    }),
+    ...mapMutations({}),
     ...mapActions({
       getToken: "getToken",
     }),
-  }
-}
+  },
+};
 </script>

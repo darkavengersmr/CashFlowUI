@@ -1,68 +1,54 @@
 <template>
   <div class="card">
-    <div>Общая сумма за месяц: {{ totalSum }}</div>
+    <div>Всего: {{ totalSum }}</div>
     <div div class="card_item">
       <span>
         <input
-          class="flowdesc"
+          class="assetsdesc"
           type="text"
           v-model="add_description"
-          @keypress.enter="addToFlow"
+          @keypress.enter="addToAssets"
         />
       </span>
       <span>
         <input
-          class="flowsum"
+          class="assetssum"
           type="number"
           v-model="add_sum"
-          @keypress.enter="addToFlow"
+          @keypress.enter="addToAssets"
         />
       </span>
     </div>
     <div div class="card_item">
-      <div class="regular">
-        <input type="checkbox" id="checkbox" v-model="repeat" /> Сделать
-        регулярным
-      </div>
-      <button class="btn add" @click="addToFlow">Добавить</button>
+      <button class="btn add" @click="addToAssets">Добавить</button>
+      <button class="btn update" @click="updateAssets">Изменить</button>
     </div>
     <br />
     <div
       div
       class="card_item"
-      v-for="(item, idx) in flow.slice().reverse()"
+      v-for="(item, idx) in assets.slice().reverse()"
       :key="idx"
     >
-      <button class="btn delete" @click="deleteFromFlow(item.id)">
-        &#128465;
-      </button>
-      <div class="flowdesc_item">{{ item.description }}</div>
-      <div class="flowsum_item">{{ item.sum }}</div>
-    </div>
-    <br />
-    <div
-      div
-      class="card_item"
-      v-for="(item, idx) in flowRegular.slice().reverse()"
-      :key="idx"
-    >
-      <button class="btn delete" @click="deleteFromFlowRegular(item.id)">
+      <button class="btn delete" @click="deleteFromAssets(item.id)">
         &#128465;
       </button>
       <div
-        class="regularflowdesc_item"
+        class="assetsdesc_item"
         @click="
           add_description = item.description;
           add_sum = item.sum;
+          id = item.id;
         "
       >
         {{ item.description }}
       </div>
       <div
-        class="regularflowsum_item"
+        class="assetssum_item"
         @click="
           add_description = item.description;
           add_sum = item.sum;
+          id = item.id;
         "
       >
         {{ item.sum }}
@@ -75,79 +61,51 @@
 import { mapState } from "vuex";
 export default {
   props: {
-    flow: Array,
-    flowRegular: Array,
+    assets: Array,
   },
-  emits: [
-    "clickBtnAddToFlow",
-    "clickBtnAddToFlowRegular",
-    "clickBtnDeleteFromFlow",
-    "clickBtnDeleteFromFlowRegular",
-  ],
+  emits: ["clickBtnAddToAssets", "clickBtnDeleteFromAssets"],
   data() {
     return {
       add_description: "",
       add_sum: 0,
-      repeat: false,
+      id: undefined,
     };
   },
   computed: {
     ...mapState({}),
     totalSum: function () {
       var sum = 0;
-      for (var index = 0; index < this.flow.length; ++index) {
-        if (this.flow[index].sum) {
-          sum += this.flow[index].sum;
+      for (var index = 0; index < this.assets.length; ++index) {
+        if (this.assets[index].sum) {
+          sum += this.assets[index].sum;
         }
       }
       return sum;
     },
-    flowRegularDescriptions: function () {
-      let new_flow = [];
-      if (this.flowRegular) {
-        for (let i = 0; i < this.flowRegular.length; i++) {
-          let { description } = this.flowRegular[i];
-          new_flow.push(description);
-        }
-      }
-      return new_flow;
-    },
   },
   methods: {
-    addToFlow() {
+    addToAssets() {
       if (this.add_description.length > 0 && this.add_sum > 0) {
-        this.$emit("clickBtnAddToFlow", {
+        this.$emit("clickBtnAddToAssets", {
           add_description: this.add_description,
           add_sum: this.add_sum,
         });
-        if (
-          this.repeat &&
-          !this.flowRegularDescriptions.includes(this.add_description)
-        ) {
-          this.$emit("clickBtnAddToFlowRegular", {
-            add_description: this.add_description,
-            add_sum: this.add_sum,
-          });
-        }
         this.add_description = "";
         this.add_sum = 0;
-        this.repeat = false;
       }
     },
-    deleteFromFlow(id) {
-      this.$emit("clickBtnDeleteFromFlow", {
-        id: id,
-      });
+    updateAssets() {
+      if (this.add_description.length > 0 && this.add_sum > 0 && this.id) {
+        this.deleteFromAssets(this.id);
+        this.addToAssets();
+      }
     },
-    deleteFromFlowRegular(id) {
-      this.$emit("clickBtnDeleteFromFlowRegular", {
-        id: id,
-      });
+    deleteFromAssets(id) {
+      this.$emit("clickBtnDeleteFromAssets", { id: id });
     },
   },
 };
 </script>
-
 <style scoped>
 .card_item {
   display: inline-flex;
@@ -159,11 +117,22 @@ export default {
   font-size: 16px;
   background: #004209;
   color: rgb(255, 255, 255);
-  width: 132px;
+  width: 176px;
   height: 32px;
   border-radius: 8px;
   padding: 0px;
-  margin: 0px 0px 0px 0px;
+  margin: 8px 2px 0px 0px;
+}
+
+.btn.update {
+  font-size: 16px;
+  background: #010042;
+  color: rgb(255, 255, 255);
+  width: 176px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 0px;
+  margin: 8px 0px 0px 0px;
 }
 
 .btn.delete {
@@ -191,7 +160,7 @@ export default {
   margin: 10px 2px 10px 2px;
 }
 
-.flowdesc {
+.assetsdesc {
   font-size: 16px;
   background: #323232;
   color: rgb(255, 255, 255);
@@ -205,7 +174,7 @@ export default {
   margin: 10px 0px 2px 2px;
 }
 
-.flowsum {
+.assetssum {
   font-size: 16px;
   background: #323232;
   color: rgb(255, 255, 255);
@@ -220,7 +189,7 @@ export default {
   margin: 10px 2px 2px 2px;
 }
 
-.flowdesc_item {
+.assetsdesc_item {
   background: #323232;
   color: rgb(255, 255, 255);
   width: 240px;
@@ -231,7 +200,7 @@ export default {
   text-align: left;
 }
 
-.flowsum_item {
+.assetssum_item {
   background: #323232;
   color: rgb(255, 255, 255);
   width: 80px;
@@ -240,13 +209,13 @@ export default {
   padding: 7px;
 }
 
-.flowbtn_item {
+.assetsbtn_item {
   display: inline-block;
   background: #323232;
   color: rgb(255, 255, 255);
 }
 
-.regularflowdesc_item {
+.regularassetsdesc_item {
   background: #323232;
   color: rgb(128, 128, 128);
   width: 240px;
@@ -257,7 +226,7 @@ export default {
   text-align: left;
 }
 
-.regularflowsum_item {
+.regularassetssum_item {
   background: #323232;
   color: rgb(128, 128, 128);
   width: 80px;

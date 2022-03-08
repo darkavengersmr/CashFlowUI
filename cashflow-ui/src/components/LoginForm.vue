@@ -1,12 +1,12 @@
 <template>
-  <div class="card">      
+  <div class="card">
     <div>
       Имя
       <input
         class="login input"
         type="text"
         v-model="form_username"
-        @keypress.enter="loginTo"        
+        @keypress.enter="loginTo"
       />
       <div></div>
       Пароль
@@ -19,7 +19,7 @@
     </div>
     <br />
     <div class="card">
-      <button class="btn main" @click="loginTo">войти</button>
+      <button class="btn login" @click="loginTo">войти</button>
     </div>
   </div>
 </template>
@@ -39,12 +39,11 @@ export default {
     };
   },
   computed: {
-    ...mapState({      
-    }),
+    ...mapState({}),
   },
   methods: {
-    loginTo() {      
-      this.$emit("clickBtnLogin", {        
+    loginTo() {
+      this.$emit("clickBtnLogin", {
         username: this.form_username,
         password: this.form_password,
       });
@@ -52,3 +51,30 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.btn.login {
+  font-size: 16px;
+  background: #004209;
+  color: rgb(255, 255, 255);
+  width: 120px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 0px;
+  margin: 0px 0px 0px 0px;
+}
+
+.login.input {
+  font-size: 16px;
+  background: #323232;
+  color: rgb(255, 255, 255);
+  width: 120px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 20px 0px 20px 0px;
+  border: 0;
+  box-shadow: none;
+  margin: 10px 0px 2px 2px;
+}
+</style>

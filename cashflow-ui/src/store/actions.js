@@ -5,22 +5,30 @@ import VueCookies from "vue-cookies";
 import api from "../api";
 
 export default {
+    registerUser(context, obj ) {
+        api.registerNewUser(obj)
+            .then(response => {
+                context.commit('setUser', response.data);
+                context.dispatch("getToken", { username: obj.username, password: obj.password });
+            })
+    },
     async getToken(context, { username, password }) {
-        api.readToken({username: username, password: password})
-        .then(function (response) {
-            if (response != undefined && response.status === 200) {
-                context.commit("setAuthorized", true);
-                context.commit("setUsername", username);
-                context.commit("setPassword", password);
-                context.commit("setToken", response.data.access_token);
-                if (response.data.access_token.length > 10) {
-                    VueCookies.set("username", username, -1);
-                    VueCookies.set("token", response.data.access_token, -1);
-                    context.commit("setToken", response.data.access_token);                    
+        api.readToken({ username: username, password: password })
+            .then(function (response) {
+                if (response != undefined && response.status === 200) {
+                    context.commit("setAuthorized", true);
+                    context.commit("setUsername", username);
+                    context.commit("setPassword", password);
+                    context.commit("setToken", response.data.access_token);
+                    if (response.data.access_token.length > 10) {
+                        VueCookies.set("username", username, -1);
+                        VueCookies.set("token", response.data.access_token, -1);
+                        context.commit("setToken", response.data.access_token);
+                    }
+                    router.push({ name: 'inflow' });
+                    console.log(123);
                 }
-                router.push({ name: 'inflow' });
-            }
-        })
+            })
             .catch(function () {
                 context.commit("setAuthorized", false);
                 router.push({ name: 'login' });
@@ -31,12 +39,12 @@ export default {
             context.commit("setToken", await VueCookies.get("token"));
         }
     },
-    getObj(context, { url, storepoint }) {               
+    getObj(context, { url, storepoint }) {
         if (this.state.user.id != undefined) {
-            api.readObject({token: this.state.auth.token, user_id: this.state.user.id, url: url})
-            .then(response => {
-                context.commit(storepoint, response.data);
-            })
+            api.readObject({ token: this.state.auth.token, user_id: this.state.user.id, url: url })
+                .then(response => {
+                    context.commit(storepoint, response.data);
+                })
                 .catch(error => {
                     if (error.response.status === 401) {
                         context.commit("setAuthorized", false);
@@ -46,8 +54,8 @@ export default {
         }
         else {
             api.readUserId(this.state.auth.token).then((user) => {
-                context.commit("setUser", user.data)
-                return api.readObject({token: this.state.auth.token, user_id: user.data.id, url: url})                
+                context.commit("setUser", user.data);
+                return api.readObject({ token: this.state.auth.token, user_id: user.data.id, url: url })
             }).then(response => {
                 context.commit(storepoint, response.data);
             })
@@ -59,12 +67,12 @@ export default {
                 });
         }
     },
-    createObj(context, { url, storepoint, obj }) {        
+    createObj(context, { url, storepoint, obj }) {
         if (this.state.user.id != undefined) {
-            api.createObject({token: this.state.auth.token, user_id: this.state.user.id, url: url, obj: obj})
-            .then(response => {                
-                context.commit(storepoint, response.data);
-            })
+            api.createObject({ token: this.state.auth.token, user_id: this.state.user.id, url: url, obj: obj })
+                .then(response => {
+                    context.commit(storepoint, response.data);
+                })
                 .catch(error => {
                     if (error.response.status === 401) {
                         context.commit("setAuthorized", false);
@@ -75,8 +83,8 @@ export default {
         else {
             api.readUserId(this.state.auth.token).then((user) => {
                 context.commit("setUser", user.data)
-                return api.createObject({token: this.state.auth.token, user_id: this.state.user.id, url: url, obj: obj})
-            }).then(response => {                
+                return api.createObject({ token: this.state.auth.token, user_id: this.state.user.id, url: url, obj: obj })
+            }).then(response => {
                 context.commit(storepoint, response.data);
             })
                 .catch(error => {
@@ -87,12 +95,12 @@ export default {
                 });
         }
     },
-    deleteObj(context, { url, storepoint, id, params }) {        
+    deleteObj(context, { url, storepoint, id, params }) {
         if (this.state.user.id != undefined) {
-            api.deleteObject({token: this.state.auth.token, user_id: this.state.user.id, url: url, params: params})
-            .then(() => {                            
-                context.commit(storepoint, id);
-            })
+            api.deleteObject({ token: this.state.auth.token, user_id: this.state.user.id, url: url, params: params })
+                .then(() => {
+                    context.commit(storepoint, id);
+                })
                 .catch(error => {
                     if (error.response.status === 401) {
                         context.commit("setAuthorized", false);
@@ -103,8 +111,36 @@ export default {
         else {
             api.readUserId(this.state.auth.token).then((user) => {
                 context.commit("setUser", user.data)
-                return api.deleteObject({token: this.state.auth.token, user_id: this.state.user.id, url: url, params: params})
-            }).then(() => {                
+                return api.deleteObject({ token: this.state.auth.token, user_id: this.state.user.id, url: url, params: params })
+            }).then(() => {
+                context.commit(storepoint, id);
+            })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        context.commit("setAuthorized", false);
+                        router.push({ name: 'login' });
+                    }
+                });
+        }
+    },
+    updateObj(context, { url, storepoint, id, obj }) {
+        if (this.state.user.id != undefined) {
+            api.updateObject({ token: this.state.auth.token, user_id: this.state.user.id, url: url, obj: obj })
+                .then(() => {
+                    context.commit(storepoint, id);
+                })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        context.commit("setAuthorized", false);
+                        router.push({ name: 'login' });
+                    }
+                });
+        }
+        else {
+            api.readUserId(this.state.auth.token).then((user) => {
+                context.commit("setUser", user.data)
+                return api.updateObject({ token: this.state.auth.token, user_id: this.state.user.id, url: url, obj: obj })
+            }).then(() => {
                 context.commit(storepoint, id);
             })
                 .catch(error => {

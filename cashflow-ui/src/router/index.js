@@ -3,6 +3,9 @@ import LoginFormView from '../views/LoginFormView.vue'
 import RegFormView from '../views/RegFormView.vue'
 import InflowFormView from '../views/InflowFormView.vue'
 import OutflowFormView from '../views/OutflowFormView.vue'
+import AssetsFormView from '../views/AssetsFormView.vue'
+import LiabilitiesFormView from '../views/LiabilitiesFormView.vue'
+import PreferencesForm from '../components/PreferencesForm.vue'
 
 import TestForm from '../components/TestForm.vue'
 
@@ -35,17 +38,17 @@ const routes = [
   {
     path: '/assets',
     name: 'assets',
-    component: undefined
+    component: AssetsFormView
   },
   {
     path: '/liabilities',
     name: 'liabilities',
-    component: undefined
+    component: LiabilitiesFormView
   },
   {
     path: '/preferences',
     name: 'preferences',
-    component: undefined
+    component: PreferencesForm
   }
 ]
 

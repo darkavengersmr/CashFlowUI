@@ -1,6 +1,16 @@
 import axios from "axios";
 
 export default {
+  registerNewUser(obj) {    
+    return axios({
+      method: 'post',
+      url: '/register',
+      headers: {
+          "accept": "application/json"          
+      },
+     data: obj 
+    })
+  },
   readToken({username, password}) {
     return axios({
       method: 'post',
@@ -41,9 +51,8 @@ export default {
           "Authorization": "Bearer " + token
       },
      data: obj 
-  })
-  }
-  ,
+    })
+  },
   deleteObject({token, user_id, url, params}) {
     return axios({
       method: 'delete',
@@ -53,6 +62,17 @@ export default {
           "Authorization": "Bearer " + token
       },
       params: params 
-  })
-  }
+    })
+  },
+  updateObject({token, user_id, url, obj}) {
+    return axios({
+      method: 'delete',
+      url: '/users/' + user_id + url,
+      headers: {
+          "accept": "application/json",
+          "Authorization": "Bearer " + token
+      },
+      data: obj
+    })
+  },
 }

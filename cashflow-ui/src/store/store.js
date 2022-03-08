@@ -10,13 +10,15 @@ export default createStore({
       auth: {
         username: "",
         password: "",
-        token: "",   
+        token: "",
       },
       user: {},
       inflow: undefined,
       inflowRegular: undefined,
       outflow: undefined,
       outflowRegular: undefined,
+      assets: undefined,
+      liabilities: undefined,
     };
   },
   mutations: mutations,

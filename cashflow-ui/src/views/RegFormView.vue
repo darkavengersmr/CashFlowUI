@@ -1,17 +1,42 @@
 <template>
   <div class="card">
-    <RegForm />
+    <RegForm
+      @clickBtnReg="
+        registerUser({
+          username: $event.username,
+          email: $event.email,
+          password: $event.password,
+          is_active: true
+        })
+      "
+    />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import RegForm from '@/components/RegForm.vue'
+import RegForm from "@/components/RegForm.vue";
+import { mapState, mapMutations, mapActions } from "vuex";
 
 export default {
-  name: 'RegFormView',
+  name: "RegFormView",
   components: {
-    RegForm
-  }
-}
+    RegForm,
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapState({
+      auth: "auth",
+    }),
+  },
+  methods: {
+    ...mapMutations({}),
+    ...mapActions({
+      registerUser: "registerUser",
+    }),
+  },
+};
 </script>
+
