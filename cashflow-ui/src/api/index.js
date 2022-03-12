@@ -11,7 +11,7 @@ export default {
      data: obj 
     })
   },
-  readToken({username, password}) {
+  readToken({username, password}) {    
     return axios({
       method: 'post',
       url: '/token',
@@ -32,7 +32,7 @@ export default {
       },
     })
   },
-  readObject({token, user_id, url}) {
+  readObject({token, user_id, url, params}) {
     return axios({
       method: 'get',
       url: '/users/' + user_id + url,
@@ -40,6 +40,7 @@ export default {
           "accept": "application/json",
           "Authorization": "Bearer " + token
       },
+      params: params 
   })
   },
   createObject({token, user_id, url, obj}) {

@@ -13,6 +13,21 @@ export default {
     },
     setUser(state, payload) {
         state.user = payload;
+    },    
+    setMonth(state, payload) {
+        state.calendar.month = payload;
+    },
+    setYear(state, payload) {
+        state.calendar.year = payload;
+    },
+    setDateIn(state, payload) {
+        state.calendar.dateIn = payload;
+    },
+    setDateOut(state, payload) {
+        state.calendar.dateOut = payload;
+    },
+    setDateAdd(state, payload) {
+        state.calendar.dateAdd = payload;
     },
     setInflow(state, payload) {
         state.inflow = payload;

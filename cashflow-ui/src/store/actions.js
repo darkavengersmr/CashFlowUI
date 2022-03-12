@@ -5,7 +5,7 @@ import VueCookies from "vue-cookies";
 import api from "../api";
 
 export default {
-    registerUser(context, obj ) {
+    registerUser(context, obj) {
         api.registerNewUser(obj)
             .then(response => {
                 context.commit('setUser', response.data);
@@ -26,7 +26,6 @@ export default {
                         context.commit("setToken", response.data.access_token);
                     }
                     router.push({ name: 'inflow' });
-                    console.log(123);
                 }
             })
             .catch(function () {
@@ -39,9 +38,15 @@ export default {
             context.commit("setToken", await VueCookies.get("token"));
         }
     },
-    getObj(context, { url, storepoint }) {
+    getUserId(context) {
+        let result = api.readUserId(this.state.auth.token).then((user) => {
+            context.commit("setUser", user.data);                        
+        });
+        return result;
+    },
+    getObj(context, { url, storepoint, params }) {
         if (this.state.user.id != undefined) {
-            api.readObject({ token: this.state.auth.token, user_id: this.state.user.id, url: url })
+            api.readObject({ token: this.state.auth.token, user_id: this.state.user.id, url: url, params: params })
                 .then(response => {
                     context.commit(storepoint, response.data);
                 })
@@ -55,7 +60,7 @@ export default {
         else {
             api.readUserId(this.state.auth.token).then((user) => {
                 context.commit("setUser", user.data);
-                return api.readObject({ token: this.state.auth.token, user_id: user.data.id, url: url })
+                return api.readObject({ token: this.state.auth.token, user_id: user.data.id, url: url, params: params })
             }).then(response => {
                 context.commit(storepoint, response.data);
             })
@@ -150,5 +155,59 @@ export default {
                     }
                 });
         }
+    },
+    setPeriod(context) {
+        var date = new Date();
+        context.commit("setMonth", date.getMonth() + 1);
+        context.commit("setYear", date.getFullYear());
+        context.dispatch("updatePeriod");
+    },
+    updatePeriod(context) {
+        var newPeriod = { dateIn: "", dateOut: "", dateAdd: "" };
+        newPeriod.dateIn = this.state.calendar.year + "-"
+        newPeriod.dateAdd = this.state.calendar.year + "-"
+        newPeriod.dateOut = this.state.calendar.year + "-"
+        if (this.state.calendar.month < 10) {
+            newPeriod.dateIn += "0";
+            newPeriod.dateAdd += "0";
+            newPeriod.dateOut += "0";
+        }
+        newPeriod.dateIn += this.state.calendar.month + "-01T00:00:00";
+        newPeriod.dateAdd += this.state.calendar.month + "-15T12:00:00";
+        function getLastDayOfMonth(year, month) {
+            let date = new Date(year, month + 1, 0);
+            return date.getDate();
+        }
+        newPeriod.dateOut += this.state.calendar.month + "-" + getLastDayOfMonth(
+            this.state.calendar.year, this.state.calendar.month - 1) + "T23:59:59";
+  
+        context.commit("setDateIn", newPeriod.dateIn);        
+        context.commit("setDateOut", newPeriod.dateOut);              
+
+        context.commit("setDateAdd", newPeriod.dateAdd);            
+    },
+    refreshFlows(context) {
+        if (this.state.authorized) {            
+            context.dispatch("getObj", {
+                url: "/inflow/",
+                storepoint: "setInflow",
+                params: {
+                    date_in: this.state.calendar.dateIn,
+                    date_out: this.state.calendar.dateOut,
+                },
+            });
+
+            context.dispatch("getObj", {
+                url: "/outflow/",
+                storepoint: "setOutflow",
+                params: {
+                    date_in: this.state.calendar.dateIn,
+                    date_out: this.state.calendar.dateOut,
+                },
+            });
+
+            context.dispatch("getObj", { url: "/inflow_regular/", storepoint: "setInflowRegular" });
+            context.dispatch("getObj", { url: "/outflow_regular/", storepoint: "setOutflowRegular" });
+        }        
     },
 }

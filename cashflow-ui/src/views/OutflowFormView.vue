@@ -4,10 +4,9 @@
       :flow="flow"
       :flowRegular="flowRegular"
       @clickBtnAddToFlow="
-        createObj({
-          url: '/outflow/',
-          storepoint: 'addToOutflow',
-          obj: { description: $event.add_description, sum: $event.add_sum },
+        createOutflow({
+          description: $event.add_description,
+          sum: $event.add_sum,
         })
       "
       @clickBtnAddToFlowRegular="
@@ -44,7 +43,7 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import FlowForm from "@/components/FlowForm.vue";
 
 export default {
-  name: "IOutflowFormView",
+  name: "OutflowFormView",
   components: {
     FlowForm,
   },
@@ -56,6 +55,7 @@ export default {
       authorized: "authorized",
       outflow: "outflow",
       outflowRegular: "outflowRegular",
+      calendar: "calendar",
     }),
     flow: function () {
       let new_flow = [];
@@ -96,16 +96,26 @@ export default {
       getObj: "getObj",
       createObj: "createObj",
       deleteObj: "deleteObj",
+      refreshFlows: "refreshFlows",
     }),
+    createOutflow({ description, sum }) {
+      var date = new Date();
+      var obj = { description: description, sum: sum, date: this.calendar.dateAdd };
+      if (
+        this.calendar.year == date.getFullYear() &&
+        this.calendar.month - 1 == date.getMonth()
+      ) {
+        obj = { description: description, sum: sum };
+      }
+      this.createObj({
+          url: "/outflow/",
+          storepoint: "addToOutflow",
+          obj: obj,
+        });
+    },
   },
   mounted() {
-    if (this.authorized) {
-      this.getObj({ url: "/outflow/", storepoint: "setOutflow" });
-      this.getObj({
-        url: "/outflow_regular/",
-        storepoint: "setOutflowRegular",
-      });
-    }
+    this.refreshFlows();
   },
 };
 </script>

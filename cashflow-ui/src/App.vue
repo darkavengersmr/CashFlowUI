@@ -1,6 +1,10 @@
 <template>
   <div class="card">
     <h2 v-if="!authorized">Cashflow</h2>
+    <div class="header">
+      <CashFlow v-if="authorized" :inflow="inflow" :outflow="outflow" />
+      <CalendarForm v-if="authorized" @updatePeriod="updateData" />
+    </div>
     <nav>
       <router-link v-if="!authorized" to="/login">Войти</router-link
       ><span v-if="!authorized"> | </span>
@@ -23,6 +27,8 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
+import CalendarForm from "./components/CalendarForm.vue";
+import CashFlow from "./components/CashFlow.vue";
 
 export default {
   name: "App",
@@ -32,6 +38,7 @@ export default {
   computed: {
     ...mapState({
       authorized: "authorized",
+      auth: "auth",
       user: "user",
       inflow: "inflow",
       inflowRegular: "inflowRegular",
@@ -48,20 +55,30 @@ export default {
       getToken: "getToken",
       getTokenFromCookie: "getTokenFromCookie",
       getObj: "getObj",
+      setPeriod: "setPeriod",
+      updatePeriod: "updatePeriod",
+      refreshFlows: "refreshFlows", 
+      getUserId: "getUserId",     
     }),
+    updateData() {
+      this.updatePeriod();
+      this.refreshFlows();
+    },
   },
   mounted() {
+    this.setPeriod();
     this.getTokenFromCookie()
-      .then(() => {
-        return this.getObj({ url: "/inflow/", storepoint: "setInflow" });
-      })
-      .then(() => {
-        return this.$router.push({ name: "inflow" });
-      });
-    //this.getTokenFromCookie();
-    //this.getObj({url: '/inflow/', storepoint: 'setInflow'});
+    .then(() => {
+      return this.getUserId();
+    })
+    .then(() => {
+      return this.$router.push({ name: "outflow" });
+    });
   },
-  components: {},
+  components: {
+    CalendarForm,
+    CashFlow,
+  },
 };
 </script>
 
@@ -72,11 +89,11 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 16px;
 }
 
 nav {
-  padding: 30px;
+  padding: 20px;
 }
 
 nav a {
@@ -86,5 +103,9 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #ffffff;
+}
+
+.header {
+  display: inline-flex;
 }
 </style>

@@ -4,10 +4,9 @@
       :flow="flow"
       :flowRegular="flowRegular"
       @clickBtnAddToFlow="
-        createObj({
-          url: '/inflow/',
-          storepoint: 'addToInflow',
-          obj: { description: $event.add_description, sum: $event.add_sum },
+        createInflow({
+          description: $event.add_description,
+          sum: $event.add_sum,
         })
       "
       @clickBtnAddToFlowRegular="
@@ -56,6 +55,7 @@ export default {
       authorized: "authorized",
       inflow: "inflow",
       inflowRegular: "inflowRegular",
+      calendar: "calendar",
     }),
     flow: function () {
       let new_flow = [];
@@ -96,13 +96,26 @@ export default {
       getObj: "getObj",
       createObj: "createObj",
       deleteObj: "deleteObj",
+      refreshFlows: "refreshFlows",
     }),
+    createInflow({ description, sum }) {
+      var date = new Date();
+      var obj = { description: description, sum: sum, date: this.calendar.dateAdd };
+      if (
+        this.calendar.year == date.getFullYear() &&
+        this.calendar.month - 1 == date.getMonth()
+      ) {
+        obj = { description: description, sum: sum };
+      }
+      this.createObj({
+          url: "/inflow/",
+          storepoint: "addToInflow",
+          obj: obj,
+        });
+    },
   },
   mounted() {
-    if (this.authorized) {
-      this.getObj({ url: "/inflow/", storepoint: "setInflow" });
-      this.getObj({ url: "/inflow_regular/", storepoint: "setInflowRegular" });
-    }
+    this.refreshFlows();
   },
 };
 </script>
