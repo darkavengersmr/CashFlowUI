@@ -58,11 +58,19 @@ export default {
       setPeriod: "setPeriod",
       updatePeriod: "updatePeriod",
       refreshFlows: "refreshFlows", 
-      getUserId: "getUserId",     
+      getUserId: "getUserId",
+      refreshAssets: "refreshAssets",
+      refreshLiabilities: "refreshLiabilities",
     }),
     updateData() {
       this.updatePeriod();
       this.refreshFlows();
+      if(this.$route.path == '/assets') {
+        this.refreshAssets();
+      }
+      if(this.$route.path == '/liabilities') {
+        this.refreshLiabilities();
+      }      
     },
   },
   mounted() {

@@ -3,20 +3,9 @@
     <AssetsForm
       :assets="assets_filter"
       @clickBtnAddToAssets="
-        createObj({
-          url: '/liabilities/',
-          storepoint: 'addToLiabilities',
-          obj: { description: $event.add_description, sum: $event.add_sum },
-        })
+        createLiabilitie({ description: $event.add_description, sum: $event.add_sum })
       "
-      @clickBtnDeleteFromAssets="
-        updateObj({
-          url: '/liabilities/',
-          storepoint: 'deleteFromLiabilities',
-          id: $event.id,
-          obj: { id: $event.id },
-        })
-      "
+      @clickBtnDeleteFromAssets="updateLiabilitie($event.id)"
     />
   </div>
 </template>
@@ -39,6 +28,7 @@ export default {
     ...mapState({
       authorized: "authorized",
       liabilities: "liabilities",
+      calendar: "calendar",
     }),
     assets_filter: function () {
       let new_assets = [];
@@ -57,12 +47,47 @@ export default {
       getObj: "getObj",
       createObj: "createObj",
       updateObj: "updateObj",
+      refreshLiabilities: "refreshLiabilities",
     }),
+    createLiabilitie({ description, sum }) {
+      var date = new Date();
+      var obj = {
+        description: description,
+        sum: sum,
+        date_in: this.calendar.dateIn,
+        date_out: "2295-12-31T23:59:59",
+      };
+      if (
+        this.calendar.year == date.getFullYear() &&
+        this.calendar.month - 1 == date.getMonth()
+      ) {
+        obj = { description: description, sum: sum };
+      }
+      this.createObj({
+        url: "/liabilities/",
+        storepoint: "addToLiabilities",
+        obj: obj,
+      });
+    },
+    updateLiabilitie(id) {
+      var date = new Date();
+      var obj = { id: id, date: this.calendar.dateAdd };
+      if (
+        this.calendar.year == date.getFullYear() &&
+        this.calendar.month - 1 == date.getMonth()
+      ) {
+        obj = { id: id };
+      }
+      this.updateObj({
+        url: "/liabilities/",
+        storepoint: "deleteFromLiabilities",
+        id: id,
+        obj: obj,
+      });
+    },
   },
   mounted() {
-    if (this.authorized) {
-      this.getObj({ url: "/liabilities/", storepoint: "setLiabilities" });
-    }
+    this.refreshLiabilities();
   },
 };
 </script>

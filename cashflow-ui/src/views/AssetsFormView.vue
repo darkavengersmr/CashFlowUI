@@ -3,20 +3,12 @@
     <AssetsForm
       :assets="assets_filter"
       @clickBtnAddToAssets="
-        createObj({
-          url: '/assets/',
-          storepoint: 'addToAssets',
-          obj: { description: $event.add_description, sum: $event.add_sum },
+        createAsset({
+          description: $event.add_description,
+          sum: $event.add_sum,
         })
       "
-      @clickBtnDeleteFromAssets="
-        updateObj({
-          url: '/assets/',
-          storepoint: 'deleteFromAssets',
-          id: $event.id,
-          obj: { id: $event.id },
-        })
-      "
+      @clickBtnDeleteFromAssets="updateAsset($event.id)"
     />
   </div>
 </template>
@@ -39,6 +31,7 @@ export default {
     ...mapState({
       authorized: "authorized",
       assets: "assets",
+      calendar: "calendar",
     }),
     assets_filter: function () {
       let new_assets = [];
@@ -57,12 +50,47 @@ export default {
       getObj: "getObj",
       createObj: "createObj",
       updateObj: "updateObj",
+      refreshAssets: "refreshAssets",
     }),
+    createAsset({ description, sum }) {
+      var date = new Date();
+      var obj = {
+        description: description,
+        sum: sum,
+        date_in: this.calendar.dateIn,
+        date_out: "2295-12-31T23:59:59",
+      };
+      if (
+        this.calendar.year == date.getFullYear() &&
+        this.calendar.month - 1 == date.getMonth()
+      ) {
+        obj = { description: description, sum: sum };
+      }
+      this.createObj({
+        url: "/assets/",
+        storepoint: "addToAssets",
+        obj: obj,
+      });
+    },
+    updateAsset(id) {
+      var date = new Date();
+      var obj = { id: id, date: this.calendar.dateAdd };
+      if (
+        this.calendar.year == date.getFullYear() &&
+        this.calendar.month - 1 == date.getMonth()
+      ) {
+        obj = { id: id };
+      }
+      this.updateObj({
+        url: "/assets/",
+        storepoint: "deleteFromAssets",
+        id: id,
+        obj: obj,
+      });
+    },
   },
   mounted() {
-    if (this.authorized) {
-      this.getObj({ url: "/assets/", storepoint: "setAssets" });
-    }
+    this.refreshAssets();
   },
 };
 </script>

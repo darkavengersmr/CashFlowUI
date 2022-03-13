@@ -64,6 +64,7 @@ export default {
           let { id, description, sum } = this.outflow.outflow[i];
           new_flow.push({ id, description, sum });
         }
+        new_flow.sort((a, b) => a.id > b.id ? 1 : -1);
       }
       return new_flow;
     },

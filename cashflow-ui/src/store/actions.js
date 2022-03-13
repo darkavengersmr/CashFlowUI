@@ -40,7 +40,7 @@ export default {
     },
     getUserId(context) {
         let result = api.readUserId(this.state.auth.token).then((user) => {
-            context.commit("setUser", user.data);                        
+            context.commit("setUser", user.data);
         });
         return result;
     },
@@ -180,14 +180,14 @@ export default {
         }
         newPeriod.dateOut += this.state.calendar.month + "-" + getLastDayOfMonth(
             this.state.calendar.year, this.state.calendar.month - 1) + "T23:59:59";
-  
-        context.commit("setDateIn", newPeriod.dateIn);        
-        context.commit("setDateOut", newPeriod.dateOut);              
 
-        context.commit("setDateAdd", newPeriod.dateAdd);            
+        context.commit("setDateIn", newPeriod.dateIn);
+        context.commit("setDateOut", newPeriod.dateOut);
+
+        context.commit("setDateAdd", newPeriod.dateAdd);
     },
     refreshFlows(context) {
-        if (this.state.authorized) {            
+        if (this.state.authorized) {
             context.dispatch("getObj", {
                 url: "/inflow/",
                 storepoint: "setInflow",
@@ -208,6 +208,24 @@ export default {
 
             context.dispatch("getObj", { url: "/inflow_regular/", storepoint: "setInflowRegular" });
             context.dispatch("getObj", { url: "/outflow_regular/", storepoint: "setOutflowRegular" });
-        }        
+        }
+    },
+    refreshAssets(context) {
+        if (this.state.authorized) {
+            var params = {};
+            if (this.state.calendar.dateAdd) {
+                params = { date: this.state.calendar.dateAdd };
+            }
+            context.dispatch("getObj", { url: "/assets/", storepoint: "setAssets", params: params });
+        }
+    },
+    refreshLiabilities(context) {
+        if (this.state.authorized) {
+            var params = {};
+            if (this.state.calendar.dateAdd) {
+                params = { date: this.state.calendar.dateAdd };
+            }
+            context.dispatch("getObj", { url: "/liabilities/", storepoint: "setLiabilities", params: params });
+        }
     },
 }
