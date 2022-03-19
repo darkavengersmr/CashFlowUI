@@ -188,22 +188,22 @@ export default {
     },
     refreshFlows(context) {
         if (this.state.authorized) {
+
+            const params = {
+                date_in: this.state.calendar.dateIn,
+                date_out: this.state.calendar.dateOut,
+            };
+
             context.dispatch("getObj", {
                 url: "/inflow/",
                 storepoint: "setInflow",
-                params: {
-                    date_in: this.state.calendar.dateIn,
-                    date_out: this.state.calendar.dateOut,
-                },
+                params: params,
             });
 
             context.dispatch("getObj", {
                 url: "/outflow/",
                 storepoint: "setOutflow",
-                params: {
-                    date_in: this.state.calendar.dateIn,
-                    date_out: this.state.calendar.dateOut,
-                },
+                params: params,
             });
 
             context.dispatch("getObj", { url: "/inflow_regular/", storepoint: "setInflowRegular" });
@@ -226,6 +226,28 @@ export default {
                 params = { date: this.state.calendar.dateAdd };
             }
             context.dispatch("getObj", { url: "/liabilities/", storepoint: "setLiabilities", params: params });
+        }
+    },
+    refreshFlowsAll(context) {
+        if (this.state.authorized) {
+
+            const params = {
+                date_in: "1970-01-01T00:00:00",
+                date_out: "2295-12-31T23:59:59",
+            };
+
+            context.dispatch("getObj", {
+                url: "/inflow/",
+                storepoint: "setInflowAll",
+                params: params,
+            });
+
+            context.dispatch("getObj", {
+                url: "/outflow/",
+                storepoint: "setOutflowAll",
+                params: params,
+            });
+           
         }
     },
 }

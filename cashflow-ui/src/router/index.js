@@ -7,13 +7,11 @@ import AssetsFormView from '../views/AssetsFormView.vue'
 import LiabilitiesFormView from '../views/LiabilitiesFormView.vue'
 import PreferencesForm from '../components/PreferencesForm.vue'
 
-import TestForm from '../components/TestForm.vue'
-
 const routes = [
   {
     path: '/',
-    name: 'test',
-    component: TestForm
+    name: 'root',
+    component: OutflowFormView
   },
   {
     path: '/login',

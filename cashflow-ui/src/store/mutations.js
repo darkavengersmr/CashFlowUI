@@ -39,6 +39,9 @@ export default {
         var newInflow = state.inflow.inflow.filter(function (f) { return f.id !== payload })
         state.inflow.inflow = newInflow;
     },
+    setInflowAll(state, payload) {
+        state.inflowAll = payload;
+    },
     setInflowRegular(state, payload) {
         state.inflowRegular = payload;
     },
@@ -58,6 +61,9 @@ export default {
     deleteFromOutflow(state, payload) {
         var newOutflow = state.outflow.outflow.filter(function (f) { return f.id !== payload })
         state.outflow.outflow = newOutflow;
+    },
+    setOutflowAll(state, payload) {
+        state.outflowAll = payload;
     },
     setOutflowRegular(state, payload) {
         state.outflowRegular = payload;
@@ -79,6 +85,9 @@ export default {
         var newAssets = state.assets.assets.filter(function (f) { return f.id !== payload })
         state.assets.assets = newAssets;
     },
+    setAssetsAll(state, payload) {
+        state.assetsAll = payload;
+    },
     setLiabilities(state, payload) {
         state.liabilities = payload;
     },
@@ -88,5 +97,8 @@ export default {
     deleteFromLiabilities(state, payload) {
         var newLiabilities = state.liabilities.liabilities.filter(function (f) { return f.id !== payload })
         state.liabilities.liabilities = newLiabilities;
+    },
+    setLiabilitiesAll(state, payload) {
+        state.liabilitiesAll = payload;
     },
 }

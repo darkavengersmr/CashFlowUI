@@ -70,6 +70,10 @@ export default {
       }
       if(this.$route.path == '/liabilities') {
         this.refreshLiabilities();
+      }
+      if(this.$route.path == '/preferences') {
+        this.refreshAssets();
+        this.refreshLiabilities();
       }      
     },
   },

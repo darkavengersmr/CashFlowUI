@@ -1,16 +1,20 @@
 <template>
+  <ReportsFormView/>
+  <br>
   <div class="card">Пользователь: {{ user.username }}</div>
   <div class="card">Email: {{ user.email }}</div>
-  <div class="card">
+  <div class="card">    
     <button class="btn exit" @click="exitBtn">Выйти</button>
   </div>
 </template>
 
 <script>
+import ReportsFormView from '../views/ReportsFormView.vue'
 import { mapState, mapMutations } from "vuex";
 
 export default {
   props: {},
+  components: { ReportsFormView },
   data() {
     return {};
   },
