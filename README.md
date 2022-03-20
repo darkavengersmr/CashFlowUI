@@ -1,7 +1,9 @@
 # CashFlowUI
 
 Frontend для сервиса CashFlow ("Денежный поток").
-Используется Vue3/Vuex/Vue-router/Chart.js
+
+Используется Vue3/Vuex/Vue-router/Chart.js.
+
 Backend здесь https://github.com/darkavengersmr/CashFlow
 
 Реализованы:
