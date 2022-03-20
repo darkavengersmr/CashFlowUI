@@ -1,24 +1,16 @@
-# cashflow-ui
+# CashFlowUI
 
-## Project setup
-```
-npm install
-```
+Frontend дл€ сервиса CashFlow ("ƒенежный поток").
+»спользуетс€ Vue3/Vuex/Vue-router/Chart.js
+Backend здесь https://github.com/darkavengersmr/CashFlow
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+–еализованы:
+- регистраци€ и авторизаци€
+- ведение доходов и расходов, с возможностью делать их регул€рными
+- ведение активов и пассивов с фиксацией их стоимости за период
+- возможность ввода, корректировки, удалени€ позиций
+- отчеты по динамике и структуре в разрезе каждой из категорий
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+![alt text](screenshots/ui1.jpg "CashFlowUI1")
+![alt text](screenshots/ui2.jpg "CashFlowUI2")
+![alt text](screenshots/ui3.jpg "CashFlowUI3")

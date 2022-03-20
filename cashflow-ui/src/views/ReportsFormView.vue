@@ -41,6 +41,18 @@
       :title="title.inflowDynamic"
       :type="type.BarChart"
     />
+    <ReportsForm
+      v-if="report == 7"
+      :data="dynamicAssetsReport"
+      :title="title.assetsDynamic"
+      :type="type.BarChart"
+    />
+    <ReportsForm
+      v-if="report == 8"
+      :data="dynamicLiabilitiesReport"
+      :title="title.liabilitiesDynamic"
+      :type="type.BarChart"
+    />
   </div>
 </template>
 
@@ -71,7 +83,7 @@ export default {
         BarChart: "BarChart",
       },
       report: 1,
-      totalReports: 6,
+      totalReports: 8,
     };
   },
   computed: {
@@ -82,6 +94,8 @@ export default {
       liabilities: "liabilities",
       outflowAll: "outflowAll",
       inflowAll: "inflowAll",
+      assetsAll: "assetsAll",
+      liabilitiesAll: "liabilitiesAll",
     }),
     structureOutflowReport: function () {
       const flow = this.outflow;
@@ -112,6 +126,16 @@ export default {
       const flow = this.inflowAll;
       const flowData = "inflow";
       return this.dynamicData({ flow: flow, flowData: flowData });
+    },
+    dynamicAssetsReport: function () {
+      const flow = this.assetsAll;
+      const flowData = "assets";
+      return this.dynamicDataReport({ flow: flow, flowData: flowData });
+    },
+    dynamicLiabilitiesReport: function () {
+      const flow = this.assetsAll;
+      const flowData = "liabilities";
+      return this.dynamicDataReport({ flow: flow, flowData: flowData });
     },
   },
   methods: {
@@ -166,6 +190,37 @@ export default {
           sums.push(dict[el]);
         }
       }
+      // параллельная сортировка массивов с периодами и суммами по году и месяцу (mm.yy)
+      for (var i = 0, endI = descriptions.length - 1; i < endI; i++) {
+        for (var j = 0, endJ = endI - i; j < endJ; j++) {
+          if (
+            descriptions[j].slice(3, 5) + descriptions[j].slice(0, 2) >
+            descriptions[j + 1].slice(3, 5) + descriptions[j + 1].slice(0, 2)
+          ) {
+            var swap_descriptions = descriptions[j];
+            descriptions[j] = descriptions[j + 1];
+            descriptions[j + 1] = swap_descriptions;
+
+            var swap_sums = sums[j];
+            sums[j] = sums[j + 1];
+            sums[j + 1] = swap_sums;
+          }
+        }
+      }
+      return { description: descriptions, sum: sums };
+    },
+    dynamicDataReport({ flow, flowData }) {
+      let descriptions = [];
+      let sums = [];
+      if (flowData in flow) {
+        // суммируем по периодам (месяцам)
+        for (let i = 0; i < flow[flowData].length; i++) {
+          let { description, sum } = flow[flowData][i];
+          descriptions.push(description);
+          sums.push(sum);
+        }
+      }
+
       // параллельная сортировка массивов с периодами и суммами по году и месяцу (mm.yy)
       for (var i = 0, endI = descriptions.length - 1; i < endI; i++) {
         for (var j = 0, endJ = endI - i; j < endJ; j++) {

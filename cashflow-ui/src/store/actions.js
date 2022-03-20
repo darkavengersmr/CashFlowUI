@@ -248,6 +248,10 @@ export default {
                 params: params,
             });
            
+            context.dispatch("getObj", {
+                url: "/reports/",
+                storepoint: "setAssetsAll",                
+            });
         }
     },
 }
