@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div>Всего: {{ totalSum }}</div>
-    <div div class="card_item">
+    <div class="card_item">
       <span>
         <input
           class="assetsdesc"
@@ -19,13 +19,21 @@
         />
       </span>
     </div>
-    <div div class="card_item">
+    <div class="card_item">
+      <div class="category_desc">Категория актива:</div>
+      <select v-model="category_id" class="category">
+        <option disabled value="">Выберите...</option>        
+        <option v-for="(item, idx) in categories" :key="idx" v-bind:value="item.id">
+          {{ item.category }}
+        </option>
+      </select>      
+    </div>    
+    <div class="card_item">
       <button class="btn add" @click="addToAssets">Добавить</button>
       <button class="btn update" @click="updateAssets">Изменить</button>
     </div>
     <br />
     <div
-      div
       class="card_item"
       v-for="(item, idx) in assets.slice().reverse()"
       :key="idx"
@@ -39,6 +47,7 @@
           add_description = item.description;
           add_sum = item.sum;
           id = item.id;
+          category_id = item.category_id;
         "
       >
         {{ item.description }}
@@ -49,6 +58,7 @@
           add_description = item.description;
           add_sum = item.sum;
           id = item.id;
+          category_id = item.category_id;
         "
       >
         {{ item.sum }}
@@ -62,13 +72,15 @@ import { mapState } from "vuex";
 export default {
   props: {
     assets: Array,
+    categories: Array,
   },
   emits: ["clickBtnAddToAssets", "clickBtnDeleteFromAssets"],
   data() {
     return {
       add_description: "",
       add_sum: 0,
-      id: undefined,
+      id: undefined,      
+      category_id: undefined,
     };
   },
   computed: {
@@ -84,14 +96,16 @@ export default {
     },
   },
   methods: {
-    addToAssets() {
+    addToAssets() {      
       if (this.add_description.length > 0 && this.add_sum > 0) {
         this.$emit("clickBtnAddToAssets", {
           add_description: this.add_description,
           add_sum: this.add_sum,
+          category_id: this.category_id,
         });
         this.add_description = "";
         this.add_sum = 0;
+        this.category_id = undefined;
       }
     },
     updateAssets() {
@@ -172,6 +186,25 @@ export default {
   border: 0;
   box-shadow: none;
   margin: 10px 0px 2px 2px;
+}
+
+.category {
+  font-size: 16px;
+  background: #323232;
+  color: rgb(255, 255, 255);
+  width: 200px;
+  height: 32px;
+  border-radius: 8px;
+  
+  border: 0;
+  box-shadow: none;
+  margin: 2px 0px 2px 2px;
+}
+
+.category_desc {
+  width: 150px;
+  height: 18px;
+  margin: 2px 0px 2px 0px;
 }
 
 .assetssum {

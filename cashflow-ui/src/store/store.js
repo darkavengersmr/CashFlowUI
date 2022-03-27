@@ -31,6 +31,7 @@ export default createStore({
       assetsAll: undefined,
       liabilities: undefined,
       liabilitiesAll: undefined,
+      categories: undefined,
     };
   },
   mutations: mutations,

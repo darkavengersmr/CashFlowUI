@@ -254,4 +254,12 @@ export default {
             });
         }
     },
+    refreshCategories(context) {
+        if (this.state.authorized) {
+            context.dispatch("getObj", {
+                url: "/categories/",
+                storepoint: "setCategories",                
+            });
+        }
+    },
 }

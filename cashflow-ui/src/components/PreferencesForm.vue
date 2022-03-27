@@ -1,20 +1,23 @@
 <template>
-  <ReportsFormView/>
-  <br>
+  <ReportsFormView/>  
+  <CategoryFormView/>
+  <br><br>
   <div class="card">Пользователь: {{ user.username }}</div>
   <div class="card">Email: {{ user.email }}</div>
   <div class="card">    
     <button class="btn exit" @click="exitBtn">Выйти</button>
   </div>
+  <br><br>
 </template>
 
 <script>
 import ReportsFormView from '../views/ReportsFormView.vue'
+import CategoryFormView from '../views/CategoryFormView.vue'
 import { mapState, mapMutations } from "vuex";
 
 export default {
   props: {},
-  components: { ReportsFormView },
+  components: { ReportsFormView, CategoryFormView },
   data() {
     return {};
   },

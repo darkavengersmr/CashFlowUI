@@ -101,4 +101,14 @@ export default {
     setLiabilitiesAll(state, payload) {
         state.liabilitiesAll = payload;
     },
+    setCategories(state, payload) {
+        state.categories = payload;
+    },
+    addToCategories(state, payload) {
+        state.categories.categories.push(payload);
+    },
+    deleteCategories(state, payload) {
+        var newCategories = state.categories.categories.filter(function (f) { return f.id !== payload })
+        state.categories.categories = newCategories;
+    },
 }
