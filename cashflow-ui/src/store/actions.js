@@ -26,9 +26,11 @@ export default {
                         context.commit("setToken", response.data.access_token);
                     }
                     router.push({ name: 'inflow' });
+                    context.commit("setLoginOrRegistrationError", "");
                 }
             })
             .catch(function () {
+                context.commit("setLoginOrRegistrationError", "Имя пользователя или пароль некорректны");
                 context.commit("setAuthorized", false);
                 router.push({ name: 'login' });
             });
@@ -203,6 +205,12 @@ export default {
             context.dispatch("getObj", {
                 url: "/outflow/",
                 storepoint: "setOutflow",
+                params: params,
+            });
+
+            context.dispatch("getObj", {
+                url: "/most_popular/",
+                storepoint: "setMostPopular",
                 params: params,
             });
 

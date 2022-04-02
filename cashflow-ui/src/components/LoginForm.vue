@@ -21,6 +21,7 @@
     <div class="card">
       <button class="btn login" @click="loginTo">войти</button>
     </div>
+    <div class="error">{{loginOrRegistrationError}}</div>
   </div>
 </template>
 
@@ -39,7 +40,9 @@ export default {
     };
   },
   computed: {
-    ...mapState({}),
+    ...mapState({
+      loginOrRegistrationError: "loginOrRegistrationError",
+    }),
   },
   methods: {
     loginTo() {
@@ -76,5 +79,11 @@ export default {
   border: 0;
   box-shadow: none;
   margin: 10px 0px 2px 2px;
+}
+
+.error {
+  font-size: 16px;  
+  color: rgb(255, 0, 0);
+  margin: 16px 0px 0px 0px;
 }
 </style>

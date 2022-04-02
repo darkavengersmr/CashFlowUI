@@ -7,6 +7,7 @@ export default createStore({
   state() {
     return {
       authorized: true,
+      loginOrRegistrationError: "",
       auth: {
         username: "",
         password: "",
@@ -32,6 +33,7 @@ export default createStore({
       liabilities: undefined,
       liabilitiesAll: undefined,
       categories: undefined,
+      mostPopular: undefined,      
     };
   },
   mutations: mutations,

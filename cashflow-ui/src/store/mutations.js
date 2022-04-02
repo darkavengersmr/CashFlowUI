@@ -111,4 +111,10 @@ export default {
         var newCategories = state.categories.categories.filter(function (f) { return f.id !== payload })
         state.categories.categories = newCategories;
     },
+    setMostPopular(state, payload) {
+        state.mostPopular = payload;
+    },
+    setLoginOrRegistrationError(state, payload) {
+        state.loginOrRegistrationError = payload;
+    },
 }

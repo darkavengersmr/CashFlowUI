@@ -3,6 +3,7 @@
     <FlowForm
       :flow="flow"
       :flowRegular="flowRegular"
+      :mostPopular="popular"
       @clickBtnAddToFlow="
         createOutflow({
           description: $event.add_description,
@@ -32,6 +33,7 @@
           params: { outflow_regular_id: $event.id },
         })
       "
+      @refreshMostPopular="refreshFlows"
     />
   </div>
 </template>
@@ -56,6 +58,7 @@ export default {
       outflow: "outflow",
       outflowRegular: "outflowRegular",
       calendar: "calendar",
+      mostPopular: "mostPopular",
     }),
     flow: function () {
       let new_flow = [];
@@ -89,6 +92,13 @@ export default {
         }
       }
       return new_flow;
+    },
+    popular: function () {
+      let most_popular = [];
+      if (this.mostPopular) {
+        most_popular = this.mostPopular.most_popular
+      }      
+      return most_popular;
     },
   },
   methods: {

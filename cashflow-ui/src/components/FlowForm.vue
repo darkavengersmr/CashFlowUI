@@ -8,6 +8,8 @@
           type="text"
           v-model="add_description"
           @keypress.enter="addToFlow"
+          @focus="mostPopularVisible = true"
+          @blur="unFocus"
         />
       </span>
       <span>
@@ -16,6 +18,8 @@
           type="number"
           v-model="add_sum"
           @keypress.enter="addToFlow"
+          @focus="mostPopularVisible = true"
+          @blur="unFocus"
         />
       </span>
     </div>
@@ -26,6 +30,21 @@
       </div>
       <button class="btn add" @click="addToFlow">Добавить</button>
     </div>
+
+    <div class="card" v-if="mostPopularVisible">
+      <div class="card_item" v-for="(item, idx) in mostPopular" :key="idx">
+        <div
+          class="mostpopulardesc_item"
+          @click="
+            add_description = item.description;
+            add_sum = 0;
+          "
+        >
+          {{ item.description }}
+        </div>
+      </div>
+    </div>
+
     <br />
     <div
       div
@@ -39,9 +58,12 @@
       <div class="flowdesc_item">{{ item.description }}</div>
       <div class="flowsum_item">{{ item.sum }}</div>
     </div>
+
     <br />
+    <div class="regularflowtitle" v-if="flowRegular.length > 0">
+    Добавить регулярные:
+    </div>    
     <div
-      div
       class="card_item"
       v-for="(item, idx) in flowRegular.slice().reverse()"
       :key="idx"
@@ -77,18 +99,21 @@ export default {
   props: {
     flow: Array,
     flowRegular: Array,
+    mostPopular: Array,
   },
   emits: [
     "clickBtnAddToFlow",
     "clickBtnAddToFlowRegular",
     "clickBtnDeleteFromFlow",
     "clickBtnDeleteFromFlowRegular",
+    "refreshMostPopular"
   ],
   data() {
     return {
       add_description: "",
       add_sum: 0,
       repeat: false,
+      mostPopularVisible: false,
     };
   },
   computed: {
@@ -114,6 +139,12 @@ export default {
     },
   },
   methods: {
+    unFocus() {      
+      function my(context) {
+        context.mostPopularVisible = false;        
+      }      
+      setTimeout(() => my(this), 1000);
+    },
     addToFlow() {
       if (this.add_description.length > 0 && this.add_sum > 0) {
         this.$emit("clickBtnAddToFlow", {
@@ -132,6 +163,8 @@ export default {
         this.add_description = "";
         this.add_sum = 0;
         this.repeat = false;
+        this.mostPopularVisible = false;
+        this.$emit("refreshMostPopular");
       }
     },
     deleteFromFlow(id) {
@@ -244,6 +277,22 @@ export default {
   display: inline-block;
   background: #323232;
   color: rgb(255, 255, 255);
+}
+
+.mostpopulardesc_item {
+  background: #323232;
+  color: rgb(107, 107, 184);
+  width: 356px;
+  height: 32px;
+  border-radius: 8px;
+  margin: 2px 2px 2px 2px;
+  padding: 7px;
+  text-align: left;
+}
+
+.regularflowtitle {
+  color: rgb(128, 128, 128);  
+  margin: 0px 2px 8px 2px;    
 }
 
 .regularflowdesc_item {
