@@ -52,7 +52,14 @@
       v-for="(item, idx) in flow.slice().reverse()"
       :key="idx"
     >
-      <button class="btn delete" @click="deleteFromFlow(item.id)">
+      <button
+        class="btn delete"
+        @click="
+          delete_func = deleteFromFlow;
+          delete_arg = item.id;
+          showModal = true;
+        "
+      >
         &#128465;
       </button>
       <div class="flowdesc_item">{{ item.description }}</div>
@@ -61,14 +68,21 @@
 
     <br />
     <div class="regularflowtitle" v-if="flowRegular.length > 0">
-    Добавить регулярные:
-    </div>    
+      Добавить регулярные:
+    </div>
     <div
       class="card_item"
       v-for="(item, idx) in flowRegular.slice().reverse()"
       :key="idx"
     >
-      <button class="btn delete" @click="deleteFromFlowRegular(item.id)">
+      <button
+        class="btn delete"
+        @click="
+          delete_func = deleteFromFlowRegular;
+          delete_arg = item.id;
+          showModal = true;
+        "
+      >
         &#128465;
       </button>
       <div
@@ -91,11 +105,45 @@
       </div>
     </div>
   </div>
+
+  <vue-final-modal v-model="showModal" class="modal-container">
+    <div class="confirm_box">
+      Хотите удалить?
+      <button
+        class="btn confirm_yes"
+        @click="
+          delete_func(delete_arg);
+          delete_func = null;
+          delete_arg = null;
+          showModal = false;
+        "
+      >
+        Да
+      </button>
+      <button
+        class="btn confirm_no"
+        @click="
+          delete_func = null;
+          delete_arg = null;
+          showModal = false;
+        "
+      >
+        Нет
+      </button>
+    </div>
+  </vue-final-modal>
+
 </template>
 
 <script>
 import { mapState } from "vuex";
+
+import { VueFinalModal } from "vue-final-modal";
+
 export default {
+  components: {
+    VueFinalModal,
+  },
   props: {
     flow: Array,
     flowRegular: Array,
@@ -106,7 +154,7 @@ export default {
     "clickBtnAddToFlowRegular",
     "clickBtnDeleteFromFlow",
     "clickBtnDeleteFromFlowRegular",
-    "refreshMostPopular"
+    "refreshMostPopular",
   ],
   data() {
     return {
@@ -114,6 +162,9 @@ export default {
       add_sum: 0,
       repeat: false,
       mostPopularVisible: false,
+      showModal: false,
+      delete_func: null,
+      delete_arg: null,
     };
   },
   computed: {
@@ -139,10 +190,10 @@ export default {
     },
   },
   methods: {
-    unFocus() {      
+    unFocus() {
       function my(context) {
-        context.mostPopularVisible = false;        
-      }      
+        context.mostPopularVisible = false;
+      }
       setTimeout(() => my(this), 1000);
     },
     addToFlow() {
@@ -291,8 +342,8 @@ export default {
 }
 
 .regularflowtitle {
-  color: rgb(128, 128, 128);  
-  margin: 0px 2px 8px 2px;    
+  color: rgb(128, 128, 128);
+  margin: 0px 2px 8px 2px;
 }
 
 .regularflowdesc_item {
@@ -314,4 +365,5 @@ export default {
   border-radius: 8px;
   padding: 7px;
 }
+
 </style>

@@ -156,8 +156,41 @@ body {
   text-align: center;
 }
 
+.confirm_box {
+  background: #000000;  
+  margin: 300px 0px 0px 0px;
+}
 
+.btn.confirm_yes {
+  font-size: 16px;
+  background: #004209;
+  color: rgb(255, 255, 255);
+  width: 64px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 0px;
+  margin: 2px 4px 2px 4px;
+}
 
+.btn.confirm_no {
+  font-size: 16px;
+  background: #240000;
+  color: rgb(255, 255, 255);
+  width: 64px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 0px;
+  margin: 2px 4px 2px 4px;
+}
+
+.modal-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;  
+  flex-direction: column;
+  background: rgb(0, 0, 0);
+}
 
 .main {
   flex: 1 0 auto;

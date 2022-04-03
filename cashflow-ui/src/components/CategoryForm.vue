@@ -13,24 +13,65 @@
       <button class="btn add" @click="addToCategory">Добавить</button>
     </div>
     <div class="card_item" v-for="(item, idx) in categories" :key="idx">
-      <button class="btn delete" @click="deleteFromCategory(item.id)">
+      <button
+        class="btn delete"
+        @click="
+          delete_func = deleteFromCategory;
+          delete_arg = item.id;
+          showModal = true;
+        "
+      >
         &#128465;
       </button>
       <div class="categorydesc_item">{{ item.category }}</div>
     </div>
   </div>
+
+  <vue-final-modal v-model="showModal" class="modal-container">
+    <div class="confirm_box">
+      Хотите удалить?
+      <button
+        class="btn confirm_yes"
+        @click="
+          delete_func(delete_arg);
+          showModal = false;
+        "
+      >
+        Да
+      </button>
+      <button
+        class="btn confirm_no"
+        @click="
+          delete_func = null;
+          delete_arg = null;
+          showModal = false;
+        "
+      >
+        Нет
+      </button>
+    </div>
+  </vue-final-modal>
 </template>
 
 <script>
 import { mapState } from "vuex";
+
+import { VueFinalModal } from "vue-final-modal";
+
 export default {
+  components: {
+    VueFinalModal,
+  },
   props: {
     categories: Array,
   },
   emits: ["clickBtnAddToCategories", "clickBtnDeleteFromCategories"],
   data() {
     return {
-      add_category: "",      
+      add_category: "",
+      showModal: false,
+      delete_func: null,
+      delete_arg: null,
     };
   },
   computed: {
@@ -49,7 +90,7 @@ export default {
       this.$emit("clickBtnDeleteFromCategories", {
         id: id,
       });
-    },    
+    },
   },
 };
 </script>

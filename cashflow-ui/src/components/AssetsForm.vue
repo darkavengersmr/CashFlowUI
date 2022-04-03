@@ -22,12 +22,16 @@
     <div class="card_item">
       <div class="category_desc">Категория актива:</div>
       <select v-model="category_id" class="category">
-        <option disabled value="">Выберите...</option>        
-        <option v-for="(item, idx) in categories" :key="idx" v-bind:value="item.id">
+        <option disabled value="">Выберите...</option>
+        <option
+          v-for="(item, idx) in categories"
+          :key="idx"
+          v-bind:value="item.id"
+        >
           {{ item.category }}
         </option>
-      </select>      
-    </div>    
+      </select>
+    </div>
     <div class="card_item">
       <button class="btn add" @click="addToAssets">Добавить</button>
       <button class="btn update" @click="updateAssets">Изменить</button>
@@ -38,7 +42,13 @@
       v-for="(item, idx) in assets.slice().reverse()"
       :key="idx"
     >
-      <button class="btn delete" @click="deleteFromAssets(item.id)">
+      <button class="btn delete" 
+      @click="
+          delete_func = deleteFromAssets;
+          delete_arg = item.id;
+          showModal = true;
+        "
+      >
         &#128465;
       </button>
       <div
@@ -65,11 +75,42 @@
       </div>
     </div>
   </div>
+
+  <vue-final-modal v-model="showModal" class="modal-container">
+    <div class="confirm_box">
+      Хотите удалить?
+      <button
+        class="btn confirm_yes"
+        @click="
+          delete_func(delete_arg);
+          showModal = false;
+        "
+      >
+        Да
+      </button>
+      <button
+        class="btn confirm_no"
+        @click="
+          delete_func = null;
+          delete_arg = null;
+          showModal = false;
+        "
+      >
+        Нет
+      </button>
+    </div>
+  </vue-final-modal>
 </template>
 
 <script>
 import { mapState } from "vuex";
+
+import { VueFinalModal} from "vue-final-modal";
+
 export default {
+  components: {
+    VueFinalModal,
+  },
   props: {
     assets: Array,
     categories: Array,
@@ -79,8 +120,11 @@ export default {
     return {
       add_description: "",
       add_sum: 0,
-      id: undefined,      
+      id: undefined,
       category_id: undefined,
+      showModal: false,
+      delete_func: null,
+      delete_arg: null,
     };
   },
   computed: {
@@ -96,7 +140,7 @@ export default {
     },
   },
   methods: {
-    addToAssets() {      
+    addToAssets() {
       if (this.add_description.length > 0 && this.add_sum > 0) {
         this.$emit("clickBtnAddToAssets", {
           add_description: this.add_description,
@@ -195,7 +239,7 @@ export default {
   width: 200px;
   height: 32px;
   border-radius: 8px;
-  
+
   border: 0;
   box-shadow: none;
   margin: 2px 0px 2px 2px;
