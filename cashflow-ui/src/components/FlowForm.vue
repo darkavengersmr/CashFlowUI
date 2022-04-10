@@ -1,6 +1,23 @@
 <template>
   <div class="card">
-    <div>Общая сумма за месяц: {{ totalSum }}</div>
+    <div
+      class="card_item"
+      v-if="showByCategory"
+      @click="showByCategory = !showByCategory"
+    >
+      Регулярные: {{ flowRegularTotalSum }}
+    </div>
+    <div
+      class="card_item"
+      v-if="showByCategory"
+      @click="showByCategory = !showByCategory"
+    >
+      Разовые: {{ totalSum - flowRegularTotalSum }}
+    </div>
+    <div @click="showByCategory = !showByCategory">
+      <span>Общая сумма за месяц: {{ totalSum }}</span
+      ><span v-if="!showByCategory"> (?)</span>
+    </div>
     <div div class="card_item">
       <span>
         <input
@@ -132,7 +149,6 @@
       </button>
     </div>
   </vue-final-modal>
-
 </template>
 
 <script>
@@ -148,6 +164,7 @@ export default {
     flow: Array,
     flowRegular: Array,
     mostPopular: Array,
+    flowRegularTotalSum: Number,
   },
   emits: [
     "clickBtnAddToFlow",
@@ -165,6 +182,7 @@ export default {
       showModal: false,
       delete_func: null,
       delete_arg: null,
+      showByCategory: false,
     };
   },
   computed: {
@@ -175,7 +193,7 @@ export default {
         if (this.flow[index].sum) {
           sum += this.flow[index].sum;
         }
-      }      
+      }
       return sum;
     },
     flowRegularDescriptions: function () {
@@ -185,7 +203,7 @@ export default {
           let { description } = this.flowRegular[i];
           new_flow.push(description);
         }
-      }          
+      }
       return new_flow;
     },
   },
@@ -197,12 +215,11 @@ export default {
       setTimeout(() => my(this), 1000);
     },
     addToFlow() {
-      console.log(this.flowRegularDescriptions);
       if (this.add_description.length > 0 && this.add_sum > 0) {
         this.$emit("clickBtnAddToFlow", {
           add_description: this.add_description,
           add_sum: this.add_sum,
-        });        
+        });
         if (
           this.repeat &&
           !this.flowRegularDescriptions.includes(this.add_description)
@@ -302,7 +319,7 @@ export default {
   text-align: center;
   border: 0;
   box-shadow: none;
-  margin: 10px 2px 2px 2px;  
+  margin: 10px 2px 2px 2px;
 }
 
 .flowdesc_item {
@@ -368,5 +385,4 @@ export default {
   padding: 7px;
   text-align: end;
 }
-
 </style>

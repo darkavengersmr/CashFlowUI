@@ -3,6 +3,7 @@
     <FlowForm
       :flow="flow"
       :flowRegular="flowRegular"
+      :flowRegularTotalSum="flowRegularTotalSum"
       :mostPopular="popular"
       @clickBtnAddToFlow="
         createOutflow({
@@ -92,6 +93,19 @@ export default {
         }
       }
       return new_flow;
+    },
+    flowRegularTotalSum: function () {
+      let regularTotalSum = 0;
+      if (this.outflow && this.outflowRegular) {
+        for (let i = 0; i < this.outflow.outflow.length; i++) {
+          for (let j = 0; j < this.outflowRegular.outflow_regular.length; j++) {            
+            if (this.outflow.outflow[i].description == this.outflowRegular.outflow_regular[j].description) {
+              regularTotalSum += this.outflow.outflow[i].sum
+            }
+          }
+        }
+      }      
+      return regularTotalSum;
     },
     popular: function () {
       let most_popular = [];

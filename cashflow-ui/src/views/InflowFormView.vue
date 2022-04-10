@@ -3,6 +3,7 @@
     <FlowForm
       :flow="flow"
       :flowRegular="flowRegular"
+      :flowRegularTotalSum="flowRegularTotalSum"
       @clickBtnAddToFlow="
         createInflow({
           description: $event.add_description,
@@ -90,6 +91,19 @@ export default {
       }
       return new_flow;
     },
+    flowRegularTotalSum: function () {
+      let regularTotalSum = 0;
+      if (this.inflow && this.inflowRegular) {
+        for (let i = 0; i < this.inflow.inflow.length; i++) {
+          for (let j = 0; j < this.inflowRegular.inflow_regular.length; j++) {            
+            if (this.inflow.inflow[i].description == this.inflowRegular.inflow_regular[j].description) {
+              regularTotalSum += this.inflow.inflow[i].sum
+            }
+          }
+        }
+      }      
+      return regularTotalSum;
+    },
   },
   methods: {
     ...mapMutations({}),
@@ -97,7 +111,7 @@ export default {
       getObj: "getObj",
       createObj: "createObj",
       deleteObj: "deleteObj",
-      refreshFlows: "refreshFlows",
+      refreshFlows: "refreshFlows",      
     }),
     createInflow({ description, sum }) {
       var date = new Date();
