@@ -32,6 +32,14 @@ import CashFlow from "./components/CashFlow.vue";
 
 export default {
   name: "App",
+  created() {
+        //Detect window risize
+        window.addEventListener('resize', this.setViewport)
+        this.setViewport();
+    },
+    beforeUnmount() {
+        window.removeEventListener('resize', this.setViewport)
+    },
   data() {
     return {};
   },
@@ -62,6 +70,10 @@ export default {
       refreshAssets: "refreshAssets",
       refreshLiabilities: "refreshLiabilities",
     }),
+    setViewport: function() {             
+            let viewportContent = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"             
+            document.querySelector("meta[name='viewport']").setAttribute("content", viewportContent) 
+    },
     updateData() {
       this.updatePeriod();
       this.refreshFlows();

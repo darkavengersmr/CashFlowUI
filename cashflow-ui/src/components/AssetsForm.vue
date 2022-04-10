@@ -1,6 +1,19 @@
 <template>
   <div class="card">
-    <div>Всего: {{ totalSum }}</div>
+    <div v-if="showByCategory" class="card">
+      <div
+        class="card_item"
+        v-for="(item, idx) in sumByCategories"
+        :key="idx"
+        @click="showByCategory = !showByCategory"
+      >
+        {{ item }}
+      </div>
+    </div>
+    <div @click="showByCategory = !showByCategory">
+      <span>Всего: {{ totalSum }}</span
+      ><span v-if="!showByCategory"> (?)</span>
+    </div>
     <div class="card_item">
       <span>
         <input
@@ -39,11 +52,12 @@
     <br />
     <div
       class="card_item"
-      v-for="(item, idx) in assets.slice().reverse()"
+      v-for="(item, idx) in assetsByCategories.slice().reverse()"
       :key="idx"
     >
-      <button class="btn delete" 
-      @click="
+      <button
+        class="btn delete"
+        @click="
           delete_func = deleteFromAssets;
           delete_arg = item.id;
           showModal = true;
@@ -105,7 +119,7 @@
 <script>
 import { mapState } from "vuex";
 
-import { VueFinalModal} from "vue-final-modal";
+import { VueFinalModal } from "vue-final-modal";
 
 export default {
   components: {
@@ -125,10 +139,16 @@ export default {
       showModal: false,
       delete_func: null,
       delete_arg: null,
+      showByCategory: false,
     };
   },
   computed: {
     ...mapState({}),
+    assetsByCategories: function () {
+      let result = this.assets;
+      result.sort((a, b) => (a.category_id < b.category_id ? 1 : -1));
+      return result;
+    },
     totalSum: function () {
       var sum = 0;
       for (var index = 0; index < this.assets.length; ++index) {
@@ -137,6 +157,31 @@ export default {
         }
       }
       return sum;
+    },
+    sumByCategories: function () {
+      let result = {};
+      let categories = {};
+
+      for (var index = 0; index < this.categories.length; ++index) {
+        categories[this.categories[index].id] = this.categories[index].category;
+      }
+
+      for (index = 0; index < this.assets.length; ++index) {
+        if (this.assets[index].category_id) {
+          if (!result[categories[this.assets[index].category_id]]) {
+            result[categories[this.assets[index].category_id]] = 0;
+          }
+          result[categories[this.assets[index].category_id]] +=
+            this.assets[index].sum;
+        }
+      }
+
+      let out = [];
+      for (let category in result) {
+        out.push(category + ": " + result[category]);
+      }
+
+      return out;
     },
   },
   methods: {
@@ -284,6 +329,7 @@ export default {
   height: 32px;
   border-radius: 8px;
   padding: 7px;
+  text-align: end;
 }
 
 .assetsbtn_item {

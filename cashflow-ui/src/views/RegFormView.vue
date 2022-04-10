@@ -6,6 +6,7 @@
           username: $event.username,
           email: $event.email,
           password: $event.password,
+          invite: $event.invite,
           is_active: true
         })
       "

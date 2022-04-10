@@ -175,7 +175,7 @@ export default {
         if (this.flow[index].sum) {
           sum += this.flow[index].sum;
         }
-      }
+      }      
       return sum;
     },
     flowRegularDescriptions: function () {
@@ -185,7 +185,7 @@ export default {
           let { description } = this.flowRegular[i];
           new_flow.push(description);
         }
-      }
+      }          
       return new_flow;
     },
   },
@@ -197,11 +197,12 @@ export default {
       setTimeout(() => my(this), 1000);
     },
     addToFlow() {
+      console.log(this.flowRegularDescriptions);
       if (this.add_description.length > 0 && this.add_sum > 0) {
         this.$emit("clickBtnAddToFlow", {
           add_description: this.add_description,
           add_sum: this.add_sum,
-        });
+        });        
         if (
           this.repeat &&
           !this.flowRegularDescriptions.includes(this.add_description)
@@ -301,7 +302,7 @@ export default {
   text-align: center;
   border: 0;
   box-shadow: none;
-  margin: 10px 2px 2px 2px;
+  margin: 10px 2px 2px 2px;  
 }
 
 .flowdesc_item {
@@ -322,6 +323,7 @@ export default {
   height: 32px;
   border-radius: 8px;
   padding: 7px;
+  text-align: end;
 }
 
 .flowbtn_item {
@@ -364,6 +366,7 @@ export default {
   height: 32px;
   border-radius: 8px;
   padding: 7px;
+  text-align: end;
 }
 
 </style>

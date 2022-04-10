@@ -8,7 +8,7 @@
         v-model="form_username"
         @keypress.enter="regUser"
       />
-      <div></div>
+      <div/>
       Email
       <input
         class="login input"
@@ -16,7 +16,7 @@
         v-model="form_email"
         @keypress.enter="regUser"
       />
-      <div></div>
+      <div/>
       Пароль
       <input
         class="login input"
@@ -24,7 +24,16 @@
         v-model="form_password"
         @keypress.enter="regUser"
       />
+    <div/>
+      Приглашение
+      <input
+        class="login input"
+        type="password"
+        v-model="form_invite"
+        @keypress.enter="regUser"
+      />
     </div>
+
     <br />
     <div class="card">
       <button class="btn login" @click="regUser">зарегистрироваться</button>
@@ -46,6 +55,7 @@ export default {
       form_username: "",
       form_password: "",
       form_email: "",
+      form_invite: "",
     };
   },
   computed: {
@@ -67,11 +77,15 @@ export default {
       else if (this.form_password.length < 3) {
         this.setLoginOrRegistrationError("Пароль не может быть таким коротким");
       }
+      else if (this.form_invite.length < 3) {
+        this.setLoginOrRegistrationError("Похоже у Вас нет приглашения");
+      }
       else {
         this.$emit("clickBtnReg", {
         username: this.form_username,
         email: this.form_email,
         password: this.form_password,
+        invite: this.form_invite,
       });
       }
       
