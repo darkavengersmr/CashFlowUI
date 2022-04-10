@@ -1,6 +1,14 @@
 <template>
-  <DoughnutChart v-if="type=='DoughnutChart'" :chartData="structureData" :options="structureOptions"/>
-  <BarChart v-if="type=='BarChart'" :chartData="dynamicData" :options="dynamicOptions"/>
+  <DoughnutChart
+    v-if="type == 'DoughnutChart'"
+    :chartData="structureData"
+    :options="structureOptions"
+  />
+  <BarChart
+    v-if="type == 'BarChart'"
+    :chartData="dynamicData"
+    :options="dynamicOptions"
+  />
 </template>
 
 <script>
@@ -17,8 +25,9 @@ export default {
   components: { DoughnutChart, BarChart },
   props: {
     data: Object,
+    data2: Object,
     type: String,
-    title: String,    
+    title: String,
   },
   data() {
     return {};
@@ -26,20 +35,19 @@ export default {
   computed: {},
   methods: {},
   setup(props) {
-
     const structureOptions = ref({
       responsive: true,
       plugins: {
         legend: {
-          position: 'bottom',
+          position: "bottom",
           labels: {
-            color: '#FFFFFF',
+            color: "#FFFFFF",
           },
         },
         title: {
           display: true,
           text: props.title,
-          color: '#FFFFFF',
+          color: "#FFFFFF",
         },
       },
     });
@@ -53,13 +61,14 @@ export default {
         title: {
           display: true,
           text: props.title,
-          color: '#FFFFFF',
+          color: "#FFFFFF",
         },
       },
     });
 
-
     const colors = helpers.randomColors();
+    const color = helpers.randomCleanColor();
+    const color2 = helpers.randomCleanColor();
 
     const structureData = computed(() => ({
       labels: props.data.description,
@@ -72,18 +81,37 @@ export default {
       ],
     }));
 
-    const color = helpers.randomCleanColor();
+    let dynamicData = {};
 
-    const dynamicData = computed(() => ({
-      labels: props.data.description,
-      datasets: [
-        {
-          data: props.data.sum,
-          backgroundColor: color,
-          borderColor: color,
-        },
-      ],
-    }));
+    if (props.data2) {
+      dynamicData = computed(() => ({
+        labels: props.data.description,
+        datasets: [
+          {
+            data: props.data.sum,
+            backgroundColor: color,
+            borderColor: color,
+          },
+          {
+            data: props.data2.sum,
+            backgroundColor: color2,
+            borderColor: color2,
+          },
+        ],
+      }));
+    }
+    else {
+      dynamicData = computed(() => ({
+        labels: props.data.description,
+        datasets: [
+          {
+            data: props.data.sum,
+            backgroundColor: color,
+            borderColor: color,
+          },          
+        ],
+      }));
+    }
 
     return { structureData, structureOptions, dynamicData, dynamicOptions };
   },

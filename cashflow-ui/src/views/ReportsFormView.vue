@@ -7,16 +7,16 @@
     </div>
     <ReportsForm
       v-if="report == 1"
-      :data="structureOutflowReport"
-      :title="title.outflowStructure"
-      :type="type.DoughnutChart"
-    />
-    <ReportsForm
-      v-if="report == 2"
       :data="structureInflowReport"
       :title="title.inflowStructure"
       :type="type.DoughnutChart"
     />
+    <ReportsForm
+      v-if="report == 2"
+      :data="structureOutflowReport"
+      :title="title.outflowStructure"
+      :type="type.DoughnutChart"
+    />    
     <ReportsForm
       v-if="report == 3"
       :data="structureAssetsReport"
@@ -31,14 +31,14 @@
     />
     <ReportsForm
       v-if="report == 5"
-      :data="dynamicOutflowReport"
-      :title="title.outflowDynamic"
+      :data="dynamicInflowReport"
+      :title="title.inflowDynamic"
       :type="type.BarChart"
     />
     <ReportsForm
       v-if="report == 6"
-      :data="dynamicInflowReport"
-      :title="title.inflowDynamic"
+      :data="dynamicOutflowReport"
+      :title="title.outflowDynamic"
       :type="type.BarChart"
     />
     <ReportsForm
@@ -51,6 +51,13 @@
       v-if="report == 8"
       :data="dynamicLiabilitiesReport"
       :title="title.liabilitiesDynamic"
+      :type="type.BarChart"
+    />
+    <ReportsForm
+      v-if="report == 9"
+      :data="dynamicInflowRegularReport"
+      :data2="dynamicOutflowRegularReport"
+      :title="title.cashflowDynamic"
       :type="type.BarChart"
     />
   </div>
@@ -77,13 +84,14 @@ export default {
         outflowDynamic: "Динамика расходов",
         assetsDynamic: "Динамика активов",
         liabilitiesDynamic: "Динамика пассивов",
+        cashflowDynamic: "Регулярные доходы и расходы",
       },
       type: {
         DoughnutChart: "DoughnutChart",
         BarChart: "BarChart",
       },
       report: 1,
-      totalReports: 8,
+      totalReports: 9,
     };
   },
   computed: {
@@ -136,6 +144,16 @@ export default {
       const flow = this.assetsAll;
       const flowData = "liabilities";
       return this.dynamicDataReport({ flow: flow, flowData: flowData });
+    },
+    dynamicInflowRegularReport: function () {
+      const flow = this.assetsAll;
+      const flowData = "inflow_regular";
+      return this.dynamicData({ flow: flow, flowData: flowData });
+    },
+    dynamicOutflowRegularReport: function () {
+      const flow = this.assetsAll;
+      const flowData = "outflow_regular";
+      return this.dynamicData({ flow: flow, flowData: flowData });
     },
   },
   methods: {
