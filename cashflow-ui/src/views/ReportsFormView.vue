@@ -16,7 +16,7 @@
       :data="structureOutflowReport"
       :title="title.outflowStructure"
       :type="type.DoughnutChart"
-    />    
+    />
     <ReportsForm
       v-if="report == 3"
       :data="structureAssetsReport"
@@ -57,8 +57,21 @@
       v-if="report == 9"
       :data="dynamicInflowRegularReport"
       :data2="dynamicOutflowRegularReport"
+      :title="title.cashflowRegularDynamic"
+      :type="type.BarChart"
+    />
+    <ReportsForm
+      v-if="report == 10"
+      :data="dynamicInflowReport"
+      :data2="dynamicOutflowReport"
       :title="title.cashflowDynamic"
       :type="type.BarChart"
+    />
+    <ReportsForm
+      v-if="report == 11"
+      :data="structureAssetsCategoriesReport"
+      :title="title.assetsCategories"
+      :type="type.DoughnutChart"
     />
   </div>
 </template>
@@ -84,14 +97,16 @@ export default {
         outflowDynamic: "Динамика расходов",
         assetsDynamic: "Динамика активов",
         liabilitiesDynamic: "Динамика пассивов",
-        cashflowDynamic: "Регулярные доходы и расходы",
+        cashflowRegularDynamic: "Регулярные доходы и расходы",
+        cashflowDynamic: "Cashflow",
+        assetsCategories: "Категории активов",
       },
       type: {
         DoughnutChart: "DoughnutChart",
         BarChart: "BarChart",
       },
       report: 1,
-      totalReports: 9,
+      totalReports: 11,
     };
   },
   computed: {
@@ -104,6 +119,7 @@ export default {
       inflowAll: "inflowAll",
       assetsAll: "assetsAll",
       liabilitiesAll: "liabilitiesAll",
+      categories: "categories",
     }),
     structureOutflowReport: function () {
       const flow = this.outflow;
@@ -155,6 +171,21 @@ export default {
       const flowData = "outflow_regular";
       return this.dynamicData({ flow: flow, flowData: flowData });
     },
+    structureAssetsCategoriesReport: function () {
+      const flow = this.assets;
+      const flowData = "assets";
+      return this.structureCategoriesData({ flow: flow, flowData: flowData });
+    },
+    categories_view: function () {
+      let new_categories = {};
+      if (this.categories) {
+        for (let i = 0; i < this.categories.categories.length; i++) {
+          let { id, category } = this.categories.categories[i];
+          new_categories[id] = category;
+        }
+      }
+      return new_categories;
+    },
   },
   methods: {
     ...mapMutations({}),
@@ -184,6 +215,30 @@ export default {
         }
       }
       return { description: descriptions, sum: sums };
+    },
+    structureCategoriesData({ flow, flowData }) {
+      let category_id = [];
+      let sums = [];
+      const dict = {};
+      if (flowData in flow) {
+        // суммируем повторяющиеся
+        for (let i = 0; i < flow[flowData].length; i++) {
+          let { category_id, sum } = flow[flowData][i];
+
+          if (category_id && sum) {
+            if (dict[category_id]) {
+              dict[category_id] += sum;
+            } else {
+              dict[category_id] = sum;
+            }
+          }
+        }
+        for (let el in dict) {
+          category_id.push(this.categories_view[el]);
+          sums.push(dict[el]);
+        }
+      }
+      return { description: category_id, sum: sums };
     },
     dynamicData({ flow, flowData }) {
       let descriptions = [];
