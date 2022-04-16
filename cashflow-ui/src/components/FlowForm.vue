@@ -48,7 +48,19 @@
       <button class="btn add" @click="addToFlow">Добавить</button>
     </div>
 
-    <div class="card" v-if="mostPopularVisible">
+    <div class="card">
+      <div
+        class="card_item"
+        v-for="(item, idx) in filtered_autocomplete"
+        :key="idx"
+      >
+        <div class="mostpopulardesc_item" @click="add_description = item">
+          {{ item }}
+        </div>
+      </div>
+    </div>
+
+    <div class="card" v-if="mostPopularVisible && add_description.length == 0">
       <div class="card_item" v-for="(item, idx) in mostPopular" :key="idx">
         <div
           class="mostpopulardesc_item"
@@ -79,8 +91,8 @@
       >
         &#128465;
       </button>
-      <div class="flowdesc_item">{{ item.description }}</div>
-      <div class="flowsum_item">{{ item.sum }}</div>
+      <div class="flowdesc_item">{{ item.description.slice(0, 24) }}</div>
+      <div class="flowsum_item">{{ item.sum.toLocaleString() }}</div>
     </div>
 
     <br />
@@ -109,7 +121,7 @@
           add_sum = item.sum;
         "
       >
-        {{ item.description }}
+        {{ item.description.slice(0, 24) }}
       </div>
       <div
         class="regularflowsum_item"
@@ -118,7 +130,7 @@
           add_sum = item.sum;
         "
       >
-        {{ item.sum }}
+        {{ item.sum.toLocaleString() }}
       </div>
     </div>
   </div>
@@ -165,6 +177,7 @@ export default {
     flowRegular: Array,
     mostPopular: Array,
     flowRegularTotalSum: Number,
+    autocomplete: Array,
   },
   emits: [
     "clickBtnAddToFlow",
@@ -176,7 +189,7 @@ export default {
   data() {
     return {
       add_description: "",
-      add_sum: 0,
+      add_sum: "",
       repeat: false,
       mostPopularVisible: false,
       showModal: false,
@@ -205,6 +218,17 @@ export default {
         }
       }
       return new_flow;
+    },
+    filtered_autocomplete: function () {
+      if (this.add_description.length > 1) {        
+        return this.autocomplete.filter(
+          (el) => el.toUpperCase().indexOf(this.add_description.toUpperCase()) >= 0 &&
+          el.toUpperCase() != this.add_description.toUpperCase()
+      );
+      }
+      else {
+        return [];
+      }
     },
   },
   methods: {
@@ -297,7 +321,7 @@ export default {
   font-size: 16px;
   background: #323232;
   color: rgb(255, 255, 255);
-  width: 272px;
+  width: 252px;
   height: 32px;
   border-radius: 8px;
   padding: 15px;
@@ -311,12 +335,12 @@ export default {
   font-size: 16px;
   background: #323232;
   color: rgb(255, 255, 255);
-  width: 80px;
+  width: 100px;
   height: 32px;
   border-radius: 8px;
   padding: 15px;
   margin: 0px;
-  text-align: center;
+  text-align: right;
   border: 0;
   box-shadow: none;
   margin: 10px 2px 2px 2px;
@@ -325,7 +349,7 @@ export default {
 .flowdesc_item {
   background: #323232;
   color: rgb(255, 255, 255);
-  width: 240px;
+  width: 220px;
   height: 32px;
   border-radius: 8px;
   margin: 2px 2px 2px 2px;
@@ -336,7 +360,7 @@ export default {
 .flowsum_item {
   background: #323232;
   color: rgb(255, 255, 255);
-  width: 80px;
+  width: 100px;
   height: 32px;
   border-radius: 8px;
   padding: 7px;
@@ -368,7 +392,7 @@ export default {
 .regularflowdesc_item {
   background: #323232;
   color: rgb(128, 128, 128);
-  width: 240px;
+  width: 220px;
   height: 32px;
   border-radius: 8px;
   margin: 2px 2px 2px 2px;
@@ -379,7 +403,7 @@ export default {
 .regularflowsum_item {
   background: #323232;
   color: rgb(128, 128, 128);
-  width: 80px;
+  width: 100px;
   height: 32px;
   border-radius: 8px;
   padding: 7px;

@@ -5,6 +5,7 @@
       :flowRegular="flowRegular"
       :flowRegularTotalSum="flowRegularTotalSum"
       :mostPopular="popular"
+      :autocomplete="complete"
       @clickBtnAddToFlow="
         createOutflow({
           description: $event.add_description,
@@ -110,9 +111,18 @@ export default {
     popular: function () {
       let most_popular = [];
       if (this.mostPopular) {
-        most_popular = this.mostPopular.most_popular
-      }      
+        most_popular = this.mostPopular.most_popular;
+      }
       return most_popular;
+    },
+    complete: function () {
+      let autocomplete = [];
+      if (this.mostPopular) {
+        for (let i=0; i<this.mostPopular.autocomplete.length; i++) {
+          autocomplete.push(this.mostPopular.autocomplete[i].description);
+        }
+      }      
+      return autocomplete;
     },
   },
   methods: {

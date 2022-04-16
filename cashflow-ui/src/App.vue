@@ -19,6 +19,8 @@
       ><span v-if="authorized"> | </span>
       <router-link v-if="authorized" to="/liabilities">Пассивы</router-link
       ><span v-if="authorized"> | </span>
+      <router-link v-if="authorized" to="/reports">Отчеты</router-link
+      ><span v-if="authorized"> | </span>
       <router-link v-if="authorized" to="/preferences">Профиль</router-link>
     </nav>
     <router-view />

@@ -76,4 +76,15 @@ export default {
       data: obj
     })
   },
+  downloadFile({token, user_id, url}) {
+    return axios({
+      method: 'get',
+      url: '/users/' + user_id + url,
+      responseType: "blob",
+      headers: {
+          "accept": "application/json",
+          "Authorization": "Bearer " + token
+      }
+  })
+  },
 }

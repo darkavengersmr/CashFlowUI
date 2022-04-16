@@ -255,10 +255,10 @@ export default {
                 storepoint: "setOutflowAll",
                 params: params,
             });
-           
+
             context.dispatch("getObj", {
                 url: "/reports/",
-                storepoint: "setAssetsAll",                
+                storepoint: "setAssetsAll",
             });
         }
     },
@@ -266,8 +266,29 @@ export default {
         if (this.state.authorized) {
             context.dispatch("getObj", {
                 url: "/categories/",
-                storepoint: "setCategories",                
+                storepoint: "setCategories",
             });
+        }
+    },
+    exportToExcel(context, { url }) {
+        if (this.state.user.id != undefined) {
+            api.downloadFile({ token: this.state.auth.token, user_id: this.state.user.id, url: url })
+                .then(response => {
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement("a");
+                    link.href = url;
+                    let date = new Date();
+                    let filename = 'cashflow' + date.toISOString().split('T')[0] + ".xlsx";
+                    link.setAttribute("download", filename);
+                    document.body.appendChild(link);
+                    link.click();
+                })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        context.commit("setAuthorized", false);
+                        router.push({ name: 'login' });
+                    }
+                });
         }
     },
 }

@@ -81,6 +81,9 @@
       :type="type.DoughnutChart"
     />
   </div>
+  <div class="card">    
+    <button class="btn report" @click="reportBtn">Эскпорт в Excel</button>
+  </div>
 </template>
 
 <script>
@@ -113,7 +116,7 @@ export default {
         DoughnutChart: "DoughnutChart",
         BarChart: "BarChart",
       },
-      report: 1,
+      report: 10,
       totalReports: 12,
     };
   },
@@ -218,11 +221,12 @@ export default {
     },
     dynamicMACashflowReport: function () {
       const flow = JSON.parse(JSON.stringify(this.dynamicCashflowReport));
-      const sum = flow.sum.reduce((a, b) => a + b, 0);
-      const avg = (sum / flow.sum.length) || 0;
-      
-      for (let i = 0; i < flow.description.length; i++) {        
-        flow.sum[i] = avg;        
+      //const sum = flow.sum.reduce((a, b) => a + b, 0);
+      //const avg = (sum / flow.sum.length) || 0;
+      const k = 1/12
+
+      for (let i = 1; i < flow.description.length; i++) {        
+        flow.sum[i] = flow.sum[i] * k + flow.sum[i-1] * (1-k);
       }      
       return flow;
     },
@@ -233,7 +237,11 @@ export default {
       refreshAssets: "refreshAssets",
       refreshLiabilities: "refreshLiabilities",
       refreshFlowsAll: "refreshFlowsAll",
+      exportToExcel: "exportToExcel",
     }),
+    reportBtn() {
+      this.exportToExcel({url: '/export/'});
+    },
     structureData({ flow, flowData }) {
       let descriptions = [];
       let sums = [];
@@ -391,5 +399,16 @@ button {
   width: 75px;
   justify-content: flex-end;
   display: inline-block;
+}
+
+.btn.report {
+  font-size: 16px;
+  background: #010042;
+  color: rgb(255, 255, 255);
+  width: 176px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 8px 8px 8px 8px;
+  margin: 20px 0px 20px 0px;
 }
 </style>

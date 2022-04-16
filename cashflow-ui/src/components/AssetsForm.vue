@@ -74,7 +74,7 @@
           category_id = item.category_id;
         "
       >
-        {{ item.description }}
+        {{ item.description.slice(0,24) }}
       </div>
       <div
         class="assetssum_item"
@@ -85,7 +85,7 @@
           category_id = item.category_id;
         "
       >
-        {{ item.sum }}
+        {{ item.sum.toLocaleString() }}
       </div>
     </div>
   </div>
@@ -133,7 +133,7 @@ export default {
   data() {
     return {
       add_description: "",
-      add_sum: 0,
+      add_sum: "",
       id: undefined,
       category_id: undefined,
       showModal: false,
@@ -267,7 +267,7 @@ export default {
   font-size: 16px;
   background: #323232;
   color: rgb(255, 255, 255);
-  width: 272px;
+  width: 252px;
   height: 32px;
   border-radius: 8px;
   padding: 15px;
@@ -300,12 +300,12 @@ export default {
   font-size: 16px;
   background: #323232;
   color: rgb(255, 255, 255);
-  width: 80px;
+  width: 100px;
   height: 32px;
   border-radius: 8px;
   padding: 15px;
   margin: 0px;
-  text-align: center;
+  text-align: right;
   border: 0;
   box-shadow: none;
   margin: 10px 2px 2px 2px;
@@ -314,7 +314,7 @@ export default {
 .assetsdesc_item {
   background: #323232;
   color: rgb(255, 255, 255);
-  width: 240px;
+  width: 220px;
   height: 32px;
   border-radius: 8px;
   margin: 2px 2px 2px 2px;
@@ -325,7 +325,7 @@ export default {
 .assetssum_item {
   background: #323232;
   color: rgb(255, 255, 255);
-  width: 80px;
+  width: 100px;
   height: 32px;
   border-radius: 8px;
   padding: 7px;

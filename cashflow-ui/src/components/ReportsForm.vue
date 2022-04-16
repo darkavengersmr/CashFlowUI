@@ -8,7 +8,7 @@
     v-if="type == 'BarChart'"
     :chartData="dynamicData"
     :options="dynamicOptions"
-  />
+  />    
 </template>
 
 <script>
@@ -28,12 +28,14 @@ export default {
     data2: Object,
     type: String,
     title: String,
-  },
+  },  
   data() {
     return {};
   },
   computed: {},
-  methods: {},
+  methods: {
+    
+  },
   setup(props) {
     const structureOptions = ref({
       responsive: true,
@@ -117,3 +119,4 @@ export default {
   },
 };
 </script>
+

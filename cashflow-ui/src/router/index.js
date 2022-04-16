@@ -5,6 +5,7 @@ import InflowFormView from '../views/InflowFormView.vue'
 import OutflowFormView from '../views/OutflowFormView.vue'
 import AssetsFormView from '../views/AssetsFormView.vue'
 import LiabilitiesFormView from '../views/LiabilitiesFormView.vue'
+import ReportsFormView from '../views/ReportsFormView.vue'
 import PreferencesForm from '../components/PreferencesForm.vue'
 
 const routes = [
@@ -42,6 +43,11 @@ const routes = [
     path: '/liabilities',
     name: 'liabilities',
     component: LiabilitiesFormView
+  },
+  {
+    path: '/reports',
+    name: 'reports',
+    component: ReportsFormView
   },
   {
     path: '/preferences',

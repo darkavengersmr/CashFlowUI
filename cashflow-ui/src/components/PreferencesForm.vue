@@ -1,5 +1,4 @@
-<template>
-  <ReportsFormView/>  
+<template>  
   <CategoryFormView/>
   <br><br>
   <div class="card">Пользователь: {{ user.username }}</div>
@@ -11,13 +10,12 @@
 </template>
 
 <script>
-import ReportsFormView from '../views/ReportsFormView.vue'
 import CategoryFormView from '../views/CategoryFormView.vue'
 import { mapState, mapMutations } from "vuex";
 
 export default {
   props: {},
-  components: { ReportsFormView, CategoryFormView },
+  components: { CategoryFormView },
   data() {
     return {};
   },
