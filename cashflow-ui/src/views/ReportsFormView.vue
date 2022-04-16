@@ -69,7 +69,8 @@
     />
     <ReportsForm
       v-if="report == 11"
-      :data="dynamicCashflowReport" 
+      :data="dynamicCashflowReport"
+      :data2="dynamicMACashflowReport"
       :title="title.cashflowDynamic"
       :type="type.BarChart"
     />
@@ -196,19 +197,34 @@ export default {
     dynamicCashflowReport: function () {
       const inflow = this.inflowAll;
       const inflowData = "inflow";
-      const inflowDynamic = this.dynamicData({ flow: inflow, flowData: inflowData });
+      const inflowDynamic = this.dynamicData({
+        flow: inflow,
+        flowData: inflowData,
+      });
 
       const outflow = this.outflowAll;
       const outflowData = "outflow";
-      const outflowDynamic = this.dynamicData({ flow: outflow, flowData: outflowData });
+      const outflowDynamic = this.dynamicData({
+        flow: outflow,
+        flowData: outflowData,
+      });
 
-
-      for (let i=0; i < inflowDynamic.description.length; i++) {
+      for (let i = 0; i < inflowDynamic.description.length; i++) {
         if (outflowDynamic.sum[i]) {
-          inflowDynamic.sum[i] -= outflowDynamic.sum[i]
+          inflowDynamic.sum[i] -= outflowDynamic.sum[i];
         }
       }
       return inflowDynamic;
+    },
+    dynamicMACashflowReport: function () {
+      const flow = JSON.parse(JSON.stringify(this.dynamicCashflowReport));
+      const sum = flow.sum.reduce((a, b) => a + b, 0);
+      const avg = (sum / flow.sum.length) || 0;
+      
+      for (let i = 0; i < flow.description.length; i++) {        
+        flow.sum[i] = avg;        
+      }      
+      return flow;
     },
   },
   methods: {
@@ -340,16 +356,14 @@ export default {
     prevReport() {
       if (this.report > 1) {
         this.report -= 1;
-      }
-      else {
+      } else {
         this.report = this.totalReports;
       }
     },
     nextReport() {
       if (this.report < this.totalReports) {
         this.report += 1;
-      }
-      else {
+      } else {
         this.report = 1;
       }
     },
