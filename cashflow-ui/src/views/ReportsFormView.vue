@@ -64,11 +64,17 @@
       v-if="report == 10"
       :data="dynamicInflowReport"
       :data2="dynamicOutflowReport"
-      :title="title.cashflowDynamic"
+      :title="title.outflowInflowDynamic"
       :type="type.BarChart"
     />
     <ReportsForm
       v-if="report == 11"
+      :data="dynamicCashflowReport" 
+      :title="title.cashflowDynamic"
+      :type="type.BarChart"
+    />
+    <ReportsForm
+      v-if="report == 12"
       :data="structureAssetsCategoriesReport"
       :title="title.assetsCategories"
       :type="type.DoughnutChart"
@@ -98,6 +104,7 @@ export default {
         assetsDynamic: "Динамика активов",
         liabilitiesDynamic: "Динамика пассивов",
         cashflowRegularDynamic: "Регулярные доходы и расходы",
+        outflowInflowDynamic: "Все доходы и расходы",
         cashflowDynamic: "Cashflow",
         assetsCategories: "Категории активов",
       },
@@ -106,7 +113,7 @@ export default {
         BarChart: "BarChart",
       },
       report: 1,
-      totalReports: 11,
+      totalReports: 12,
     };
   },
   computed: {
@@ -185,6 +192,23 @@ export default {
         }
       }
       return new_categories;
+    },
+    dynamicCashflowReport: function () {
+      const inflow = this.inflowAll;
+      const inflowData = "inflow";
+      const inflowDynamic = this.dynamicData({ flow: inflow, flowData: inflowData });
+
+      const outflow = this.outflowAll;
+      const outflowData = "outflow";
+      const outflowDynamic = this.dynamicData({ flow: outflow, flowData: outflowData });
+
+
+      for (let i=0; i < inflowDynamic.description.length; i++) {
+        if (outflowDynamic.sum[i]) {
+          inflowDynamic.sum[i] -= outflowDynamic.sum[i]
+        }
+      }
+      return inflowDynamic;
     },
   },
   methods: {
@@ -317,10 +341,16 @@ export default {
       if (this.report > 1) {
         this.report -= 1;
       }
+      else {
+        this.report = this.totalReports;
+      }
     },
     nextReport() {
       if (this.report < this.totalReports) {
         this.report += 1;
+      }
+      else {
+        this.report = 1;
       }
     },
   },
