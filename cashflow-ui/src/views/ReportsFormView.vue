@@ -82,7 +82,7 @@
     />
   </div>
   <div class="card">    
-    <button class="btn report" @click="reportBtn">Эскпорт в Excel</button>
+    <button class="btn report" @click="reportBtn">Отчеты в Excel</button>
   </div>
 </template>
 
@@ -246,7 +246,7 @@ export default {
       let descriptions = [];
       let sums = [];
       const dict = {};
-      if (flowData in flow) {
+      if (flow && flowData in flow) {
         // суммируем повторяющиеся
         for (let i = 0; i < flow[flowData].length; i++) {
           let { description, sum } = flow[flowData][i];
@@ -268,7 +268,7 @@ export default {
       let category_id = [];
       let sums = [];
       const dict = {};
-      if (flowData in flow) {
+      if (flow && flowData in flow) {
         // суммируем повторяющиеся
         for (let i = 0; i < flow[flowData].length; i++) {
           let { category_id, sum } = flow[flowData][i];
@@ -292,7 +292,7 @@ export default {
       let descriptions = [];
       let sums = [];
       const dict = {};
-      if (flowData in flow) {
+      if (flow && flowData in flow) {
         // суммируем по периодам (месяцам)
         for (let i = 0; i < flow[flowData].length; i++) {
           let { date, sum } = flow[flowData][i];
@@ -333,7 +333,7 @@ export default {
     dynamicDataReport({ flow, flowData }) {
       let descriptions = [];
       let sums = [];
-      if (flowData in flow) {
+      if (flow && flowData in flow) {
         // суммируем по периодам (месяцам)
         for (let i = 0; i < flow[flowData].length; i++) {
           let { description, sum } = flow[flowData][i];

@@ -8,9 +8,11 @@
           type="text"
           v-model="add_category"
           @keypress.enter="addToCategory"
+          @input="btnAddControl"
         />
       </span>
-      <button class="btn add" @click="addToCategory">Добавить</button>
+      <button v-if="btnAddIsActive" class="btn add active" @click="addToCategory">Добавить</button>
+      <button v-if="!btnAddIsActive" class="btn add notactive">Добавить</button>
     </div>
     <div class="card_item" v-for="(item, idx) in categories" :key="idx">
       <button
@@ -72,12 +74,21 @@ export default {
       showModal: false,
       delete_func: null,
       delete_arg: null,
+      btnAddIsActive: false,
     };
   },
   computed: {
     ...mapState({}),
   },
   methods: {
+    btnAddControl() {
+      if (this.add_category.length > 2) {
+        this.btnAddIsActive = true
+      }
+      else {
+        this.btnAddIsActive = false
+      }
+    },
     addToCategory() {
       if (this.add_category.length > 0) {
         this.$emit("clickBtnAddToCategories", {
@@ -102,10 +113,21 @@ export default {
   color: #ffffff;
 }
 
-.btn.add {
+.btn.add.active {
   font-size: 16px;
   background: #004209;
   color: rgb(255, 255, 255);
+  width: 132px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 0px;
+  margin: 0px 0px 10px 0px;
+}
+
+.btn.add.notactive {
+  font-size: 16px;
+  background: #323232;
+  color: rgb(192, 192, 192);
   width: 132px;
   height: 32px;
   border-radius: 8px;

@@ -25,6 +25,7 @@
           type="text"
           v-model="add_description"
           @keypress.enter="addToFlow"
+          @input="btnAddControl"
           @focus="mostPopularVisible = true"
           @blur="unFocus"
         />
@@ -35,17 +36,19 @@
           type="number"
           v-model="add_sum"
           @keypress.enter="addToFlow"
+          @input="btnAddControl"
           @focus="mostPopularVisible = true"
           @blur="unFocus"
         />
       </span>
     </div>
     <div div class="card_item">
-      <div class="regular">
+      <div class="regular" @click="repeat = !repeat">
         <input type="checkbox" id="checkbox" v-model="repeat" /> Сделать
         регулярным
       </div>
-      <button class="btn add" @click="addToFlow">Добавить</button>
+      <button v-if="btnAddIsActive" class="btn add active" @click="addToFlow">Добавить</button>
+      <button v-if="!btnAddIsActive" class="btn add notactive">Добавить</button>
     </div>
 
     <div class="card">
@@ -119,6 +122,7 @@
         @click="
           add_description = item.description;
           add_sum = item.sum;
+          btnAddControl();
         "
       >
         {{ item.description.slice(0, 24) }}
@@ -128,6 +132,7 @@
         @click="
           add_description = item.description;
           add_sum = item.sum;
+          btnAddControl();
         "
       >
         {{ item.sum.toLocaleString() }}
@@ -196,6 +201,7 @@ export default {
       delete_func: null,
       delete_arg: null,
       showByCategory: false,
+      btnAddIsActive: false,
     };
   },
   computed: {
@@ -220,7 +226,7 @@ export default {
       return new_flow;
     },
     filtered_autocomplete: function () {
-      if (this.add_description.length > 1) {        
+      if (this.autocomplete && this.add_description.length > 1) {        
         return this.autocomplete.filter(
           (el) => el.toUpperCase().indexOf(this.add_description.toUpperCase()) >= 0 &&
           el.toUpperCase() != this.add_description.toUpperCase()
@@ -232,6 +238,14 @@ export default {
     },
   },
   methods: {
+    btnAddControl() {
+      if (this.add_description.length > 2 && parseInt(this.add_sum)>0) {
+        this.btnAddIsActive = true
+      }
+      else {
+        this.btnAddIsActive = false
+      }
+    },
     unFocus() {
       function my(context) {
         context.mostPopularVisible = false;
@@ -281,10 +295,21 @@ export default {
   color: #ffffff;
 }
 
-.btn.add {
+.btn.add.active {
   font-size: 16px;
   background: #004209;
   color: rgb(255, 255, 255);
+  width: 132px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 0px;
+  margin: 0px 0px 0px 0px;
+}
+
+.btn.add.notactive {
+  font-size: 16px;
+  background: #323232;
+  color: rgb(192, 192, 192);
   width: 132px;
   height: 32px;
   border-radius: 8px;

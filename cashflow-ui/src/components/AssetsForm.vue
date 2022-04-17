@@ -21,6 +21,7 @@
           type="text"
           v-model="add_description"
           @keypress.enter="addToAssets"
+          @input="btnAddUpdateControl"
         />
       </span>
       <span>
@@ -29,12 +30,17 @@
           type="number"
           v-model="add_sum"
           @keypress.enter="addToAssets"
+          @input="btnAddUpdateControl"
         />
       </span>
     </div>
     <div class="card_item">
       <div class="category_desc">Категория актива:</div>
-      <select v-model="category_id" class="category">
+      <select
+        v-model="category_id"
+        class="category"
+        @change="btnAddUpdateControl"
+      >
         <option disabled value="">Выберите...</option>
         <option
           v-for="(item, idx) in categories"
@@ -46,8 +52,30 @@
       </select>
     </div>
     <div class="card_item">
-      <button class="btn add" @click="addToAssets">Добавить</button>
-      <button class="btn update" @click="updateAssets">Изменить</button>
+      <button v-if="btnAddIsActive" class="btn add active" @click="addToAssets">
+        Добавить
+      </button>
+      <button
+        v-if="!btnAddIsActive"
+        class="btn add notactive"
+        @click="addToAssets"
+      >
+        Добавить
+      </button>
+      <button
+        v-if="btnUpdateIsActive"
+        class="btn update active"
+        @click="updateAssets"
+      >
+        Изменить
+      </button>
+      <button
+        v-if="!btnUpdateIsActive"
+        class="btn update notactive"
+        @click="updateAssets"
+      >
+        Изменить
+      </button>
     </div>
     <br />
     <div
@@ -72,9 +100,10 @@
           add_sum = item.sum;
           id = item.id;
           category_id = item.category_id;
+          btnAddUpdateControl();
         "
       >
-        {{ item.description.slice(0,24) }}
+        {{ item.description.slice(0, 24) }}
       </div>
       <div
         class="assetssum_item"
@@ -83,7 +112,8 @@
           add_sum = item.sum;
           id = item.id;
           category_id = item.category_id;
-        "
+          btnAddUpdateControl();
+        "        
       >
         {{ item.sum.toLocaleString() }}
       </div>
@@ -140,6 +170,8 @@ export default {
       delete_func: null,
       delete_arg: null,
       showByCategory: false,
+      btnAddIsActive: false,
+      btnUpdateIsActive: false,
     };
   },
   computed: {
@@ -185,6 +217,25 @@ export default {
     },
   },
   methods: {
+    btnAddUpdateControl() {            
+      if (this.assets && this.assets.map((el) => el.description).indexOf(this.add_description) != -1) {
+        this.btnUpdateIsActive = true;
+        this.btnAddIsActive = false;       
+      } else {
+        this.btnUpdateIsActive = false;
+        if (
+        this.add_description.length > 2 &&
+        parseInt(this.add_sum) > 0 &&
+        this.category_id
+      ) {
+        this.btnAddIsActive = true;
+      } else {
+        this.btnAddIsActive = false;
+      }    
+      }
+
+      
+    },
     addToAssets() {
       if (this.add_description.length > 0 && this.add_sum > 0) {
         this.$emit("clickBtnAddToAssets", {
@@ -216,7 +267,7 @@ export default {
   color: #ffffff;
 }
 
-.btn.add {
+.btn.add.active {
   font-size: 16px;
   background: #004209;
   color: rgb(255, 255, 255);
@@ -227,10 +278,32 @@ export default {
   margin: 8px 2px 0px 0px;
 }
 
-.btn.update {
+.btn.add.notactive {
+  font-size: 16px;
+  background: #323232;
+  color: rgb(192, 192, 192);
+  width: 176px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 0px;
+  margin: 8px 2px 0px 0px;
+}
+
+.btn.update.active {
   font-size: 16px;
   background: #010042;
   color: rgb(255, 255, 255);
+  width: 176px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 0px;
+  margin: 8px 0px 0px 0px;
+}
+
+.btn.update.notactive {
+  font-size: 16px;
+  background: #323232;
+  color: rgb(192, 192, 192);
   width: 176px;
   height: 32px;
   border-radius: 8px;
