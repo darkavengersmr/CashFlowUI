@@ -15,7 +15,7 @@
 
 <script>
 import CategoryFormView from '../views/CategoryFormView.vue'
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 
 export default {
   props: {},
@@ -35,10 +35,16 @@ export default {
       setAuthorized: "setAuthorized",
       setIsDemo: "setIsDemo",
     }),
+    ...mapActions({
+      exportToExcel: "exportToExcel",
+    }),
     exitBtn() {
       this.setIsDemo(false);
       this.setAuthorized(false);
       this.$router.push({ name: "login" });
+    },
+    reportBtn() {
+      this.exportToExcel({url: '/export/'});
     },
   },
 };
