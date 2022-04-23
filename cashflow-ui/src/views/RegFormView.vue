@@ -10,6 +10,12 @@
           is_active: true
         })
       "
+      @clickBtnDemo="
+        getToken({
+          username: $event.username,
+          password: $event.password,
+        })
+      "
     />
   </div>
 </template>
@@ -36,6 +42,7 @@ export default {
     ...mapMutations({}),
     ...mapActions({
       registerUser: "registerUser",
+      getToken: "getToken",
     }),
   },
 };

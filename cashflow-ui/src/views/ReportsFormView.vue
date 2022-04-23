@@ -363,7 +363,7 @@ export default {
             sums[j + 1] = swap_sums;
           }
         }
-      }
+      }      
       return { description: descriptions, sum: sums };
     },
     prevReport() {

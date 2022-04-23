@@ -47,7 +47,7 @@
           params: { outflow_regular_id: $event.id },
         })
       "
-      @refreshMostPopular="refreshFlows"
+      @refreshMostPopular="refreshMostPopular"
     />
   </div>
 </template>
@@ -145,7 +145,7 @@ export default {
       getObj: "getObj",
       createObj: "createObj",
       deleteObj: "deleteObj",
-      refreshFlows: "refreshFlows",
+      refreshMostPopular: "refreshMostPopular",
     }),
     createOutflow({ description, sum }) {
       var date = new Date();

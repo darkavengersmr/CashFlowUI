@@ -333,9 +333,6 @@ export default {
         this.mostPopularVisible = false;
         this.$emit("refreshMostPopular");
         this.btnAddControl();        
-        if (!this.isMobile) {
-          this.refreshFlowsAll();
-        }
       }
     },
     updateFlow() {
@@ -352,9 +349,6 @@ export default {
         this.mostPopularVisible = false;
         this.$emit("refreshMostPopular");
         this.btnAddControl();
-        if (!this.isMobile) {
-          this.refreshFlowsAll();
-        }
       }
     },
     deleteFromFlow(id) {
@@ -362,9 +356,6 @@ export default {
       this.$emit("clickBtnDeleteFromFlow", {
         id: id,
       });
-      if (!this.isMobile) {
-          this.refreshFlowsAll();
-        }
     },
     deleteFromFlowRegular(id) {
       this.selected_flow_id = null;

@@ -1,6 +1,7 @@
 <template>
   <div class="card">
     <h2 v-if="!authorized">Cashflow</h2>
+    <div v-if="isDemo" class="demo">ДЕМО-РЕЖИМ. ИЗМЕНЕНИЯ НЕ СОХРАНЯЮТСЯ</div>
     <div class="header">
       <CashFlow v-if="authorized" :inflow="inflow" :outflow="outflow" />
       <CalendarForm v-if="authorized" @updatePeriod="updateData" />
@@ -54,7 +55,7 @@ export default {
     this.setViewport();
 
     this.getTokenFromCookie()
-      .then((token) => {        
+      .then((token) => {                
         return this.getUserId(token);
       })
       .then(() => {      
@@ -63,6 +64,9 @@ export default {
         this.refreshLiabilities();
         this.refreshFlowsAll();
         this.refreshCategories();
+        if (this.user.username == 'demo') {
+          this.setIsDemo(true);
+        }
       })      
        .then(() => {
          return this.$router.push({ name: "outflow" });
@@ -84,6 +88,7 @@ export default {
       outflow: "outflow",
       outflowRegular: "outflowRegular",
       isMobile: "isMobile",
+      isDemo: "isDemo",
     }),
   },
   methods: {
@@ -91,6 +96,7 @@ export default {
       setAuthorized: "setAuthorized",
       setUserid: "setUserid",
       setIsMobile: "setIsMobile",
+      setIsDemo: "setIsDemo",
     }),
     ...mapActions({
       getToken: "getToken",
@@ -201,5 +207,10 @@ nav a.router-link-exact-active {
   margin: 0px 40px 0px 0px;
 }
 
+.demo {
+  width: 100%;
+  background: #240000;
+  margin: 0px 0px 10px 0px;
+}
 
 </style>

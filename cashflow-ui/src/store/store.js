@@ -7,6 +7,7 @@ export default createStore({
   state() {
     return {
       isMobile: true,
+      isDemo: false,
       authorized: true,
       loginOrRegistrationError: "",
       auth: {

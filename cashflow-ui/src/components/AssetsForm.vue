@@ -180,7 +180,7 @@ export default {
       isMobile: "isMobile",
     }),
     assetsByCategories: function () {
-      let result = this.assets;
+      let result = this.assets;      
       result.sort((a, b) => (a.category_id < b.category_id ? 1 : -1));
       return result;
     },
@@ -223,6 +223,7 @@ export default {
     ...mapActions({      
       refreshAssets: "refreshAssets",
       refreshLiabilities: "refreshLiabilities",
+      refreshFlowsAll: "refreshFlowsAll",
     }),
     btnAddUpdateControl() {
       let descriptions = this.assets.map((el) => el.description);
@@ -267,8 +268,7 @@ export default {
         this.category_id = undefined;
 
         if (!this.isMobile) {
-          this.refreshAssets();
-          this.refreshLiabilities();          
+          this.refreshFlowsAll();         
         }
       }
     },
@@ -277,16 +277,14 @@ export default {
         this.deleteFromAssets(this.id);
         this.addToAssets();
         if (!this.isMobile) {
-          this.refreshAssets();
-          this.refreshLiabilities();          
+          this.refreshFlowsAll();
         }
       }
     },
     deleteFromAssets(id) {
       this.$emit("clickBtnDeleteFromAssets", { id: id });
       if (!this.isMobile) {
-          this.refreshAssets();
-          this.refreshLiabilities();          
+          this.refreshFlowsAll();
         }
     },
   },

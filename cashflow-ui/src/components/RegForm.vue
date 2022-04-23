@@ -38,6 +38,10 @@
     <div class="card">
       <button class="btn login" @click="regUser">зарегистрироваться</button>
     </div>
+    <br>
+    <div class="card">
+      <button class="btn demo" @click="demoUser">демо-режим</button>
+    </div>
     <div class="error">{{loginOrRegistrationError}}</div>
   </div>
 </template>
@@ -49,7 +53,7 @@ export default {
     username: String,
     password: String,
   },
-  emits: ["clickBtnReg"],
+  emits: ["clickBtnReg", "clickBtnDemo"],
   data() {
     return {
       form_username: "",
@@ -61,11 +65,13 @@ export default {
   computed: {
     ...mapState({
       loginOrRegistrationError: "loginOrRegistrationError",
+      isDemo: "isDemo",
     }),
   },
   methods: {
     ...mapMutations({
       setLoginOrRegistrationError: "setLoginOrRegistrationError",
+      setIsDemo: "setIsDemo",
     }),
     regUser() {
       if (this.form_username.length < 3) {
@@ -87,9 +93,15 @@ export default {
         password: this.form_password,
         invite: this.form_invite,
       });
-      }
-      
+      }      
     },
+    demoUser() {
+        this.setIsDemo(true);
+        this.$emit("clickBtnDemo", {
+        username: "demo",        
+        password: "demoP@$$w0rD",        
+      });
+    },    
   },
 };
 </script>
@@ -100,6 +112,17 @@ export default {
   background: #004209;
   color: rgb(255, 255, 255);
   width: 240px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 0px;
+  margin: 0px 0px 0px 0px;
+}
+
+.btn.demo {
+  font-size: 16px;
+  background: #0a0042;
+  color: rgb(255, 255, 255);
+  width: 160px;
   height: 32px;
   border-radius: 8px;
   padding: 0px;

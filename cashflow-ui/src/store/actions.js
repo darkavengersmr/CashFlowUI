@@ -191,6 +191,21 @@ export default {
 
         context.commit("setDateAdd", newPeriod.dateAdd);
     },
+    refreshMostPopular(context) {
+        if (this.state.authorized) {
+
+            const params = {
+                date_in: this.state.calendar.dateIn,
+                date_out: this.state.calendar.dateOut,
+            };
+
+            context.dispatch("getObj", {
+                url: "/most_popular/",
+                storepoint: "setMostPopular",
+                params: params,
+            });
+        }
+    },
     refreshFlows(context) {
         if (this.state.authorized) {
 

@@ -2,6 +2,9 @@ export default {
     setIsMobile(state, payload) {
         state.isMobile = payload;
     },
+    setIsDemo(state, payload) {
+        state.isDemo = payload;
+    },
     setAuthorized(state, payload) {
         state.authorized = payload;
     },

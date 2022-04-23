@@ -33,8 +33,10 @@ export default {
   methods: {
     ...mapMutations({
       setAuthorized: "setAuthorized",
+      setIsDemo: "setIsDemo",
     }),
     exitBtn() {
+      this.setIsDemo(false);
       this.setAuthorized(false);
       this.$router.push({ name: "login" });
     },
