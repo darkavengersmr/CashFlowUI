@@ -12,6 +12,18 @@
           sum: $event.add_sum,
         })
       "
+      @clickBtnUpdateFlow="
+        deleteObj({
+          url: '/outflow/',
+          storepoint: 'deleteFromOutflow',
+          id: $event.id,
+          params: { outflow_id: $event.id },
+        });
+        createOutflow({
+          description: $event.description,
+          sum: $event.sum,
+        })
+      "
       @clickBtnAddToFlowRegular="
         createObj({
           url: '/outflow_regular/',

@@ -10,6 +10,19 @@
           sum: $event.add_sum,
         })
       "
+      @clickBtnUpdateFlow="
+        deleteObj({
+          url: '/inflow/',
+          storepoint: 'deleteFromInflow',
+          id: $event.id,
+          params: { inflow_id: $event.id },
+        });
+        createInflow({
+          description: $event.description,
+          sum: $event.sum,
+        })
+      "
+
       @clickBtnAddToFlowRegular="
         createObj({
           url: '/inflow_regular/',

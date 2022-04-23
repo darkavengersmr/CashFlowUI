@@ -237,6 +237,7 @@ export default {
       refreshAssets: "refreshAssets",
       refreshLiabilities: "refreshLiabilities",
       refreshFlowsAll: "refreshFlowsAll",
+      refreshCategories: "refreshCategories",
       exportToExcel: "exportToExcel",
     }),
     reportBtn() {
@@ -380,6 +381,7 @@ export default {
     this.refreshAssets();
     this.refreshLiabilities();
     this.refreshFlowsAll();
+    this.refreshCategories();
   },
 };
 </script>

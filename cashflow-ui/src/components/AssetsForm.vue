@@ -35,7 +35,6 @@
       </span>
     </div>
     <div class="card_item">
-      <div class="category_desc">Категория актива:</div>
       <select
         v-model="category_id"
         class="category"
@@ -50,32 +49,34 @@
           {{ item.category }}
         </option>
       </select>
-    </div>
-    <div class="card_item">
-      <button v-if="btnAddIsActive" class="btn add active" @click="addToAssets">
+      <button
+        v-if="btnAddIsActive && !btnUpdateIsActive"
+        class="btn add active"
+        @click="addToAssets"
+      >
         Добавить
       </button>
       <button
-        v-if="!btnAddIsActive"
+        v-if="!btnAddIsActive && !btnUpdateIsActive"
         class="btn add notactive"
         @click="addToAssets"
       >
         Добавить
       </button>
       <button
-        v-if="btnUpdateIsActive"
+        v-if="btnUpdateIsActive && !btnAddIsActive"
         class="btn update active"
         @click="updateAssets"
       >
         Изменить
       </button>
-      <button
+      <!--button
         v-if="!btnUpdateIsActive"
         class="btn update notactive"
         @click="updateAssets"
       >
         Изменить
-      </button>
+      </button-->
     </div>
     <br />
     <div
@@ -113,7 +114,7 @@
           id = item.id;
           category_id = item.category_id;
           btnAddUpdateControl();
-        "        
+        "
       >
         {{ item.sum.toLocaleString() }}
       </div>
@@ -217,24 +218,36 @@ export default {
     },
   },
   methods: {
-    btnAddUpdateControl() {            
-      if (this.assets && this.assets.map((el) => el.description).indexOf(this.add_description) != -1) {
+    btnAddUpdateControl() {
+      let descriptions = this.assets.map((el) => el.description);
+      if (
+        this.assets &&
+        descriptions.indexOf(this.add_description) != -1 &&
+        this.assets[descriptions.indexOf(this.add_description)].sum !=
+          this.add_sum
+      ) {
         this.btnUpdateIsActive = true;
-        this.btnAddIsActive = false;       
+        this.btnAddIsActive = false;
+      } else if (
+        this.assets &&
+        descriptions.indexOf(this.add_description) != -1 &&
+        this.assets[descriptions.indexOf(this.add_description)].sum ==
+          this.add_sum
+      ) {
+        this.btnUpdateIsActive = false;
+        this.btnAddIsActive = false;
       } else {
         this.btnUpdateIsActive = false;
         if (
-        this.add_description.length > 2 &&
-        parseInt(this.add_sum) > 0 &&
-        this.category_id
-      ) {
-        this.btnAddIsActive = true;
-      } else {
-        this.btnAddIsActive = false;
-      }    
+          this.add_description.length > 2 &&
+          parseInt(this.add_sum) > 0 &&
+          this.category_id
+        ) {
+          this.btnAddIsActive = true;
+        } else {
+          this.btnAddIsActive = false;
+        }
       }
-
-      
     },
     addToAssets() {
       if (this.add_description.length > 0 && this.add_sum > 0) {
@@ -271,29 +284,29 @@ export default {
   font-size: 16px;
   background: #004209;
   color: rgb(255, 255, 255);
-  width: 176px;
+  width: 132px;
   height: 32px;
   border-radius: 8px;
   padding: 0px;
-  margin: 8px 2px 0px 0px;
+  margin: 8px 0px 0px 0px;
 }
 
 .btn.add.notactive {
   font-size: 16px;
   background: #323232;
   color: rgb(192, 192, 192);
-  width: 176px;
+  width: 132px;
   height: 32px;
   border-radius: 8px;
   padding: 0px;
-  margin: 8px 2px 0px 0px;
+  margin: 8px 0px 0px 0px;
 }
 
 .btn.update.active {
   font-size: 16px;
   background: #010042;
   color: rgb(255, 255, 255);
-  width: 176px;
+  width: 132px;
   height: 32px;
   border-radius: 8px;
   padding: 0px;
@@ -304,7 +317,7 @@ export default {
   font-size: 16px;
   background: #323232;
   color: rgb(192, 192, 192);
-  width: 176px;
+  width: 132px;
   height: 32px;
   border-radius: 8px;
   padding: 0px;
@@ -354,13 +367,14 @@ export default {
   font-size: 16px;
   background: #323232;
   color: rgb(255, 255, 255);
-  width: 200px;
+  width: 220px;
   height: 32px;
   border-radius: 8px;
 
   border: 0;
   box-shadow: none;
-  margin: 2px 0px 2px 2px;
+  padding: 0px;
+  margin: 8px 2px 0px 0px;
 }
 
 .category_desc {

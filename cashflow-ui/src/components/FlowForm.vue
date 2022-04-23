@@ -47,8 +47,18 @@
         <input type="checkbox" id="checkbox" v-model="repeat" /> Сделать
         регулярным
       </div>
-      <button v-if="btnAddIsActive" class="btn add active" @click="addToFlow">Добавить</button>
-      <button v-if="!btnAddIsActive" class="btn add notactive">Добавить</button>
+      <button v-if="btnAddIsActive" class="btn add active" @click="addToFlow">
+        Добавить
+      </button>
+      <button v-if="btnUpdateIsActive" class="btn update" @click="updateFlow">
+        Изменить
+      </button>
+      <button
+        v-if="!btnAddIsActive && !btnUpdateIsActive"
+        class="btn add notactive"
+      >
+        Добавить
+      </button>
     </div>
 
     <div class="card">
@@ -94,8 +104,28 @@
       >
         &#128465;
       </button>
-      <div class="flowdesc_item">{{ item.description.slice(0, 24) }}</div>
-      <div class="flowsum_item">{{ item.sum.toLocaleString() }}</div>
+      <div
+        class="flowdesc_item"
+        @click="
+          add_description = item.description;
+          add_sum = item.sum;
+          selected_flow_id = item.id;
+          btnAddControl();
+        "
+      >
+        {{ item.description.slice(0, 24) }}
+      </div>
+      <div
+        class="flowsum_item"
+        @click="
+          add_description = item.description;
+          add_sum = item.sum;
+          selected_flow_id = item.id;
+          btnAddControl();
+        "
+      >
+        {{ item.sum.toLocaleString() }}
+      </div>
     </div>
 
     <br />
@@ -122,6 +152,7 @@
         @click="
           add_description = item.description;
           add_sum = item.sum;
+          selected_flow_id = null;
           btnAddControl();
         "
       >
@@ -132,6 +163,7 @@
         @click="
           add_description = item.description;
           add_sum = item.sum;
+          selected_flow_id = null;
           btnAddControl();
         "
       >
@@ -190,6 +222,7 @@ export default {
     "clickBtnDeleteFromFlow",
     "clickBtnDeleteFromFlowRegular",
     "refreshMostPopular",
+    "clickBtnUpdateFlow",
   ],
   data() {
     return {
@@ -202,13 +235,15 @@ export default {
       delete_arg: null,
       showByCategory: false,
       btnAddIsActive: false,
+      btnUpdateIsActive: false,
+      selected_flow_id: null,
     };
   },
   computed: {
     ...mapState({}),
     totalSum: function () {
       var sum = 0;
-      for (var index = 0; index < this.flow.length; ++index) {
+      for (var index = 0; index < this.flow.length; index++) {
         if (this.flow[index].sum) {
           sum += this.flow[index].sum;
         }
@@ -226,24 +261,42 @@ export default {
       return new_flow;
     },
     filtered_autocomplete: function () {
-      if (this.autocomplete && this.add_description.length > 1) {        
+      if (this.autocomplete && this.add_description.length > 1) {
         return this.autocomplete.filter(
-          (el) => el.toUpperCase().indexOf(this.add_description.toUpperCase()) >= 0 &&
-          el.toUpperCase() != this.add_description.toUpperCase()
-      );
-      }
-      else {
+          (el) =>
+            el.toUpperCase().indexOf(this.add_description.toUpperCase()) >= 0 &&
+            el.toUpperCase() != this.add_description.toUpperCase()
+        );
+      } else {
         return [];
       }
     },
   },
   methods: {
     btnAddControl() {
-      if (this.add_description.length > 2 && parseInt(this.add_sum)>0) {
-        this.btnAddIsActive = true
-      }
-      else {
-        this.btnAddIsActive = false
+      if (this.add_description.length > 2 && parseInt(this.add_sum) > 0) {
+        if (this.selected_flow_id) {
+          let existInFlow = this.flow.reduce(
+            (sum, el) =>
+              sum ||
+              (el.description == this.add_description &&
+                el.sum != this.add_sum),
+            false
+          );
+          if (existInFlow) {
+            this.btnAddIsActive = false;
+            this.btnUpdateIsActive = true;
+          } else {
+            this.btnAddIsActive = true;
+            this.btnUpdateIsActive = false;
+          }
+        } else {
+          this.btnAddIsActive = true;
+          this.btnUpdateIsActive = false;
+        }
+      } else {
+        this.btnAddIsActive = false;
+        this.btnUpdateIsActive = false;
       }
     },
     unFocus() {
@@ -267,19 +320,40 @@ export default {
             add_sum: this.add_sum,
           });
         }
+
         this.add_description = "";
         this.add_sum = 0;
+        this.selected_flow_id = null;
         this.repeat = false;
         this.mostPopularVisible = false;
         this.$emit("refreshMostPopular");
+        this.btnAddControl();
+      }
+    },
+    updateFlow() {
+      if (this.add_description.length > 0 && this.add_sum > 0) {
+        this.$emit("clickBtnUpdateFlow", {
+          description: this.add_description,
+          sum: this.add_sum,
+          id: this.selected_flow_id,
+        });
+        this.add_description = "";
+        this.add_sum = 0;
+        this.selected_flow_id = null;
+        this.repeat = false;
+        this.mostPopularVisible = false;
+        this.$emit("refreshMostPopular");
+        this.btnAddControl();
       }
     },
     deleteFromFlow(id) {
+      this.selected_flow_id = null;
       this.$emit("clickBtnDeleteFromFlow", {
         id: id,
       });
     },
     deleteFromFlowRegular(id) {
+      this.selected_flow_id = null;
       this.$emit("clickBtnDeleteFromFlowRegular", {
         id: id,
       });
@@ -303,7 +377,7 @@ export default {
   height: 32px;
   border-radius: 8px;
   padding: 0px;
-  margin: 0px 0px 0px 0px;
+  margin: 8px 0px 0px 0px;
 }
 
 .btn.add.notactive {
@@ -314,7 +388,18 @@ export default {
   height: 32px;
   border-radius: 8px;
   padding: 0px;
-  margin: 0px 0px 0px 0px;
+  margin: 8px 0px 0px 0px;
+}
+
+.btn.update {
+  font-size: 16px;
+  background: #010042;
+  color: rgb(255, 255, 255);
+  width: 132px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 0px;
+  margin: 8px 0px 0px 0px;
 }
 
 .btn.delete {
@@ -336,10 +421,10 @@ export default {
   height: 32px;
   border-radius: 8px;
   padding: 6px;
-  margin: 20px 0px 20px 0px;
+  margin: 0px;
   border: 0;
   box-shadow: none;
-  margin: 10px 2px 10px 2px;
+  margin: 8px 2px 0px 0px;
 }
 
 .flowdesc {

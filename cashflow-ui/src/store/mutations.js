@@ -38,7 +38,7 @@ export default {
     deleteFromInflow(state, payload) {
         var newInflow = state.inflow.inflow.filter(function (f) { return f.id !== payload })
         state.inflow.inflow = newInflow;
-    },
+    },    
     setInflowAll(state, payload) {
         state.inflowAll = payload;
     },
