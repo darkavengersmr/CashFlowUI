@@ -47,7 +47,7 @@ export default {
 </script>
 <style scoped>
 .cashflow_mobile {
-  width: 150px;
+  width: 100px;
 }
 
 .cashflow {
