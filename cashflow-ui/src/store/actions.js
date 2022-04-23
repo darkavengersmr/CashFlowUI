@@ -36,12 +36,15 @@ export default {
             });
     },
     async getTokenFromCookie(context) {
+        let token = '';
         if (this.state.auth.token == "") {
-            context.commit("setToken", await VueCookies.get("token"));
-        }
+            token = await VueCookies.get("token");
+            context.commit("setToken", token);
+        }        
+        return token;
     },
-    getUserId(context) {
-        let result = api.readUserId(this.state.auth.token).then((user) => {
+    getUserId(context, token) {        
+        let result = api.readUserId(token).then((user) => {
             context.commit("setUser", user.data);
         });
         return result;

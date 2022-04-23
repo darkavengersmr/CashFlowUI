@@ -1,6 +1,10 @@
-<template>  
+<template>    
   <CategoryFormView/>
-  <br><br>
+
+  <div class="card" v-if="!isMobile">    
+    <button class="btn report" @click="reportBtn">Отчеты в Excel</button>
+  </div>
+
   <div class="card">Пользователь: {{ user.username }}</div>
   <div class="card">Email: {{ user.email }}</div>
   <div class="card">    
@@ -23,6 +27,7 @@ export default {
     ...mapState({
       user: "user",
       authorized: "authorized",
+      isMobile: "isMobile",
     }),
   },
   methods: {
@@ -47,5 +52,16 @@ export default {
   border-radius: 8px;
   padding: 0px;
   margin: 8px 0px 0px 0px;
+}
+
+.btn.report {
+  font-size: 16px;
+  background: #010042;
+  color: rgb(255, 255, 255);
+  width: 176px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 8px 8px 8px 8px;
+  margin: 20px 0px 20px 0px;
 }
 </style>

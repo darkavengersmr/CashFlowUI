@@ -1,11 +1,18 @@
 <template>
-  <div class="card">
-    <div class="cashflow">Баланс:</div>
+  <div v-if="isMobile" class="cashflow_mobile">
+    <div >Баланс:</div>
     <div>{{ cashflow }}</div>
+  </div>
+  <div v-if="!isMobile" class="cashflow">
+    <span >Баланс: </span>
+    <span>{{ cashflow }} &nbsp;</span>
   </div>
 </template>
 
 <script>
+
+import { mapState } from "vuex";
+
 export default {
   props: {
     inflow: Object,
@@ -31,14 +38,20 @@ export default {
       }
       return cashflow;
     },
+    ...mapState({
+      isMobile: "isMobile",
+    }),
   },
   methods: {},
 };
 </script>
 <style scoped>
-.cashflow {
-  width: 120px;
-  margin-top: 8px;
-  margin-bottom: 0px;
+.cashflow_mobile {
+  width: 150px;
 }
+
+.cashflow {
+  width: 220px;
+}
+
 </style>

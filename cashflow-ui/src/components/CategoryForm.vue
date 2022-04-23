@@ -181,7 +181,7 @@ h5 {
 .categorydesc_item {
   background: #323232;
   color: rgb(255, 255, 255);
-  width: 262px;
+  width: 320px;
   height: 32px;
   border-radius: 8px;
   margin: 2px 2px 2px 2px;

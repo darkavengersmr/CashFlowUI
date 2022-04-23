@@ -60,7 +60,9 @@ export default {
     },
   },
   methods: {
-    ...mapMutations({}),
+    ...mapMutations({
+      setSelectedReport: "setSelectedReport",
+    }),
     ...mapActions({
       getObj: "getObj",
       createObj: "createObj",
@@ -107,8 +109,7 @@ export default {
     },
   },
   mounted() {
-    this.refreshLiabilities();
-    this.refreshCategories();
+    this.setSelectedReport(11);
   },
 };
 </script>

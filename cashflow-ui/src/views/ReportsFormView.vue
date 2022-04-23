@@ -6,82 +6,82 @@
       <button @click="nextReport">&#5125;</button>
     </div>
     <ReportsForm
-      v-if="report == 1"
+      v-if="selectedReport == 1"
       :data="structureInflowReport"
       :title="title.inflowStructure"
       :type="type.DoughnutChart"
     />
     <ReportsForm
-      v-if="report == 2"
+      v-if="selectedReport == 3"
       :data="structureOutflowReport"
       :title="title.outflowStructure"
       :type="type.DoughnutChart"
     />
     <ReportsForm
-      v-if="report == 3"
+      v-if="selectedReport == 8"
       :data="structureAssetsReport"
       :title="title.assetsStructure"
       :type="type.DoughnutChart"
     />
     <ReportsForm
-      v-if="report == 4"
+      v-if="selectedReport == 10"
       :data="structureLiabilitiesReport"
       :title="title.liabilitiesStructure"
       :type="type.DoughnutChart"
     />
     <ReportsForm
-      v-if="report == 5"
+      v-if="selectedReport == 2"
       :data="dynamicInflowReport"
       :title="title.inflowDynamic"
       :type="type.BarChart"
     />
     <ReportsForm
-      v-if="report == 6"
+      v-if="selectedReport == 4"
       :data="dynamicOutflowReport"
       :title="title.outflowDynamic"
       :type="type.BarChart"
     />
     <ReportsForm
-      v-if="report == 7"
+      v-if="selectedReport == 9"
       :data="dynamicAssetsReport"
       :title="title.assetsDynamic"
       :type="type.BarChart"
     />
     <ReportsForm
-      v-if="report == 8"
+      v-if="selectedReport == 11"
       :data="dynamicLiabilitiesReport"
       :title="title.liabilitiesDynamic"
       :type="type.BarChart"
     />
     <ReportsForm
-      v-if="report == 9"
+      v-if="selectedReport == 7"
       :data="dynamicInflowRegularReport"
       :data2="dynamicOutflowRegularReport"
       :title="title.cashflowRegularDynamic"
       :type="type.BarChart"
     />
     <ReportsForm
-      v-if="report == 10"
+      v-if="selectedReport == 5"
       :data="dynamicInflowReport"
       :data2="dynamicOutflowReport"
       :title="title.outflowInflowDynamic"
       :type="type.BarChart"
     />
     <ReportsForm
-      v-if="report == 11"
+      v-if="selectedReport == 6"
       :data="dynamicCashflowReport"
       :data2="dynamicMACashflowReport"
       :title="title.cashflowDynamic"
       :type="type.BarChart"
     />
     <ReportsForm
-      v-if="report == 12"
+      v-if="selectedReport == 12"
       :data="structureAssetsCategoriesReport"
       :title="title.assetsCategories"
       :type="type.DoughnutChart"
     />
   </div>
-  <div class="card">    
+  <div class="card" v-if="isMobile">    
     <button class="btn report" @click="reportBtn">Отчеты в Excel</button>
   </div>
 </template>
@@ -100,28 +100,28 @@ export default {
     return {
       title: {
         inflowStructure: "Структура доходов",
-        outflowStructure: "Структура расходов",
-        assetsStructure: "Структура активов",
-        liabilitiesStructure: "Структура пассивов",
         inflowDynamic: "Динамика доходов",
+        outflowStructure: "Структура расходов",
         outflowDynamic: "Динамика расходов",
-        assetsDynamic: "Динамика активов",
-        liabilitiesDynamic: "Динамика пассивов",
-        cashflowRegularDynamic: "Регулярные доходы и расходы",
         outflowInflowDynamic: "Все доходы и расходы",
         cashflowDynamic: "Cashflow",
+        cashflowRegularDynamic: "Регулярные доходы и расходы",        
+        assetsStructure: "Структура активов",
+        assetsDynamic: "Динамика активов",
+        liabilitiesStructure: "Структура пассивов",                
+        liabilitiesDynamic: "Динамика пассивов",        
         assetsCategories: "Категории активов",
       },
       type: {
         DoughnutChart: "DoughnutChart",
         BarChart: "BarChart",
       },
-      report: 10,
       totalReports: 12,
     };
   },
   computed: {
     ...mapState({
+      selectedReport: "selectedReport",
       outflow: "outflow",
       inflow: "inflow",
       assets: "assets",
@@ -131,6 +131,7 @@ export default {
       assetsAll: "assetsAll",
       liabilitiesAll: "liabilitiesAll",
       categories: "categories",
+      isMobile: "isMobile",
     }),
     structureOutflowReport: function () {
       const flow = this.outflow;
@@ -232,13 +233,16 @@ export default {
     },
   },
   methods: {
-    ...mapMutations({}),
+    ...mapMutations({
+      setSelectedReport: "setSelectedReport",
+    }),
     ...mapActions({
       refreshAssets: "refreshAssets",
       refreshLiabilities: "refreshLiabilities",
       refreshFlowsAll: "refreshFlowsAll",
       refreshCategories: "refreshCategories",
       exportToExcel: "exportToExcel",
+      refreshFlows: "refreshFlows",
     }),
     reportBtn() {
       this.exportToExcel({url: '/export/'});
@@ -363,25 +367,25 @@ export default {
       return { description: descriptions, sum: sums };
     },
     prevReport() {
-      if (this.report > 1) {
-        this.report -= 1;
+      if (this.selectedReport > 1) {
+        this.setSelectedReport(this.selectedReport - 1);        
       } else {
-        this.report = this.totalReports;
+        this.setSelectedReport(this.totalReports);
       }
     },
     nextReport() {
-      if (this.report < this.totalReports) {
-        this.report += 1;
+      if (this.selectedReport < this.totalReports) {
+        this.setSelectedReport(this.selectedReport + 1);    
       } else {
-        this.report = 1;
+        this.setSelectedReport(1);    
       }
     },
   },
-  mounted() {
-    this.refreshAssets();
-    this.refreshLiabilities();
-    this.refreshFlowsAll();
-    this.refreshCategories();
+  mounted() {    
+        this.refreshAssets();
+        this.refreshLiabilities();
+        this.refreshFlowsAll();
+        this.refreshCategories();
   },
 };
 </script>

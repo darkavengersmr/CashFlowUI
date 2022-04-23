@@ -6,6 +6,7 @@ import actions from "./actions";
 export default createStore({
   state() {
     return {
+      isMobile: true,
       authorized: true,
       loginOrRegistrationError: "",
       auth: {
@@ -33,7 +34,8 @@ export default createStore({
       liabilities: undefined,
       liabilitiesAll: undefined,
       categories: undefined,
-      mostPopular: undefined,      
+      mostPopular: undefined,
+      selectedReport: 5,   
     };
   },
   mutations: mutations,

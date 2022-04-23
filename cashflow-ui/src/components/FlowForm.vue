@@ -5,17 +5,17 @@
       v-if="showByCategory"
       @click="showByCategory = !showByCategory"
     >
-      Регулярные: {{ flowRegularTotalSum }}
+      Регулярные: {{ flowRegularTotalSum.toLocaleString() }}
     </div>
     <div
       class="card_item"
       v-if="showByCategory"
       @click="showByCategory = !showByCategory"
     >
-      Разовые: {{ totalSum - flowRegularTotalSum }}
+      Разовые: {{ (totalSum - flowRegularTotalSum).toLocaleString() }}
     </div>
     <div @click="showByCategory = !showByCategory">
-      <span>Общая сумма за месяц: {{ totalSum }}</span
+      <span>Общая сумма за месяц: {{ totalSum.toLocaleString() }}</span
       ><span v-if="!showByCategory"> (?)</span>
     </div>
     <div div class="card_item">
@@ -201,13 +201,13 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 import { VueFinalModal } from "vue-final-modal";
 
 export default {
   components: {
-    VueFinalModal,
+    VueFinalModal,    
   },
   props: {
     flow: Array,
@@ -240,7 +240,9 @@ export default {
     };
   },
   computed: {
-    ...mapState({}),
+    ...mapState({
+      isMobile: "isMobile",
+    }),
     totalSum: function () {
       var sum = 0;
       for (var index = 0; index < this.flow.length; index++) {
@@ -273,6 +275,9 @@ export default {
     },
   },
   methods: {
+    ...mapActions({
+      refreshFlowsAll: "refreshFlowsAll",
+    }),
     btnAddControl() {
       if (this.add_description.length > 2 && parseInt(this.add_sum) > 0) {
         if (this.selected_flow_id) {
@@ -327,7 +332,10 @@ export default {
         this.repeat = false;
         this.mostPopularVisible = false;
         this.$emit("refreshMostPopular");
-        this.btnAddControl();
+        this.btnAddControl();        
+        if (!this.isMobile) {
+          this.refreshFlowsAll();
+        }
       }
     },
     updateFlow() {
@@ -344,6 +352,9 @@ export default {
         this.mostPopularVisible = false;
         this.$emit("refreshMostPopular");
         this.btnAddControl();
+        if (!this.isMobile) {
+          this.refreshFlowsAll();
+        }
       }
     },
     deleteFromFlow(id) {
@@ -351,6 +362,9 @@ export default {
       this.$emit("clickBtnDeleteFromFlow", {
         id: id,
       });
+      if (!this.isMobile) {
+          this.refreshFlowsAll();
+        }
     },
     deleteFromFlowRegular(id) {
       this.selected_flow_id = null;

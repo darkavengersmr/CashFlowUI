@@ -11,7 +11,7 @@
       </div>
     </div>
     <div @click="showByCategory = !showByCategory">
-      <span>Всего: {{ totalSum }}</span
+      <span>Всего: {{ totalSum.toLocaleString() }}</span
       ><span v-if="!showByCategory"> (?)</span>
     </div>
     <div class="card_item">
@@ -148,7 +148,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 import { VueFinalModal } from "vue-final-modal";
 
@@ -176,7 +176,9 @@ export default {
     };
   },
   computed: {
-    ...mapState({}),
+    ...mapState({
+      isMobile: "isMobile",
+    }),
     assetsByCategories: function () {
       let result = this.assets;
       result.sort((a, b) => (a.category_id < b.category_id ? 1 : -1));
@@ -195,7 +197,7 @@ export default {
       let result = {};
       let categories = {};
 
-      for (var index = 0; index < this.categories.length; ++index) {
+      for (var index = 0; index < this.categories.length; index++) {
         categories[this.categories[index].id] = this.categories[index].category;
       }
 
@@ -211,13 +213,17 @@ export default {
 
       let out = [];
       for (let category in result) {
-        out.push(category + ": " + result[category]);
+        out.push(category + ": " + result[category].toLocaleString());
       }
 
       return out;
     },
   },
   methods: {
+    ...mapActions({      
+      refreshAssets: "refreshAssets",
+      refreshLiabilities: "refreshLiabilities",
+    }),
     btnAddUpdateControl() {
       let descriptions = this.assets.map((el) => el.description);
       if (
@@ -259,16 +265,29 @@ export default {
         this.add_description = "";
         this.add_sum = 0;
         this.category_id = undefined;
+
+        if (!this.isMobile) {
+          this.refreshAssets();
+          this.refreshLiabilities();          
+        }
       }
     },
     updateAssets() {
       if (this.add_description.length > 0 && this.add_sum > 0 && this.id) {
         this.deleteFromAssets(this.id);
         this.addToAssets();
+        if (!this.isMobile) {
+          this.refreshAssets();
+          this.refreshLiabilities();          
+        }
       }
     },
     deleteFromAssets(id) {
       this.$emit("clickBtnDeleteFromAssets", { id: id });
+      if (!this.isMobile) {
+          this.refreshAssets();
+          this.refreshLiabilities();          
+        }
     },
   },
 };

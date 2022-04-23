@@ -1,4 +1,7 @@
 export default {
+    setIsMobile(state, payload) {
+        state.isMobile = payload;
+    },
     setAuthorized(state, payload) {
         state.authorized = payload;
     },
@@ -116,5 +119,8 @@ export default {
     },
     setLoginOrRegistrationError(state, payload) {
         state.loginOrRegistrationError = payload;
+    },
+    setSelectedReport(state, payload) {
+        state.selectedReport = payload;
     },
 }

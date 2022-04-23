@@ -19,29 +19,58 @@
       ><span v-if="authorized"> | </span>
       <router-link v-if="authorized" to="/liabilities">Пассивы</router-link
       ><span v-if="authorized"> | </span>
-      <router-link v-if="authorized" to="/reports">Отчеты</router-link
-      ><span v-if="authorized"> | </span>
+      <router-link v-if="authorized && isMobile" to="/reports">Отчеты</router-link
+      ><span v-if="authorized && isMobile"> | </span>
       <router-link v-if="authorized" to="/preferences">Профиль</router-link>
     </nav>
-    <router-view />
-  </div>
+
+    <div v-if="!isMobile && authorized" class="nomobile">
+      <div class="nomobile_item">
+      <router-view />
+      </div>
+      <div>
+        <ReportsFormView/>
+      </div>
+    </div>
+
+    <div v-if="isMobile || !authorized">
+      <router-view />
+    </div>
+
+</div>
 </template>
 
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
 import CalendarForm from "./components/CalendarForm.vue";
 import CashFlow from "./components/CashFlow.vue";
+import ReportsFormView from './views/ReportsFormView.vue'
 
 export default {
   name: "App",
   created() {
-        //Detect window risize
-        window.addEventListener('resize', this.setViewport)
-        this.setViewport();
-    },
-    beforeUnmount() {
-        window.removeEventListener('resize', this.setViewport)
-    },
+    //Detect window resize
+    window.addEventListener("resize", this.setViewport);
+    this.setViewport();
+
+    this.getTokenFromCookie()
+      .then((token) => {        
+        return this.getUserId(token);
+      })
+      .then(() => {      
+        this.refreshFlows();
+        this.refreshAssets();
+        this.refreshLiabilities();
+        this.refreshFlowsAll();
+        this.refreshCategories();
+      })      
+       .then(() => {
+         return this.$router.push({ name: "outflow" });
+      });
+  },
+  beforeUnmount() {
+    window.removeEventListener("resize", this.setViewport);
+  },
   data() {
     return {};
   },
@@ -54,12 +83,14 @@ export default {
       inflowRegular: "inflowRegular",
       outflow: "outflow",
       outflowRegular: "outflowRegular",
+      isMobile: "isMobile",
     }),
   },
   methods: {
     ...mapMutations({
       setAuthorized: "setAuthorized",
       setUserid: "setUserid",
+      setIsMobile: "setIsMobile",
     }),
     ...mapActions({
       getToken: "getToken",
@@ -67,43 +98,68 @@ export default {
       getObj: "getObj",
       setPeriod: "setPeriod",
       updatePeriod: "updatePeriod",
-      refreshFlows: "refreshFlows", 
+      refreshFlows: "refreshFlows",
       getUserId: "getUserId",
       refreshAssets: "refreshAssets",
       refreshLiabilities: "refreshLiabilities",
+      refreshFlowsAll: "refreshFlowsAll",
+      refreshCategories: "refreshCategories",
     }),
-    setViewport: function() {             
-            let viewportContent = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"             
-            document.querySelector("meta[name='viewport']").setAttribute("content", viewportContent) 
+    setViewport: function () {
+      let viewportContent =
+        "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+      document
+        .querySelector("meta[name='viewport']")
+        .setAttribute("content", viewportContent);
     },
     updateData() {
       this.updatePeriod();
       this.refreshFlows();
-      if(this.$route.path == '/assets') {
+      if (this.$route.path == "/assets") {
         this.refreshAssets();
       }
-      if(this.$route.path == '/liabilities') {
+      if (this.$route.path == "/liabilities") {
         this.refreshLiabilities();
       }
-      if(this.$route.path == '/preferences') {
+      if (this.$route.path == "/preferences") {
         this.refreshAssets();
         this.refreshLiabilities();
-      }      
+      }
+    },
+    isMobileOrDesktop() {
+      //this.setWindowinnerWidth(window.innerWidth);
+
+      if (window.innerWidth <= 900) {
+        this.setIsMobile(true);
+      } else {
+        if (
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(
+            navigator.userAgent
+          )
+        ) {
+          this.setIsMobile(true);
+        } else {
+          this.setIsMobile(false);
+        }
+      }
     },
   },
   mounted() {
+
     this.setPeriod();
-    this.getTokenFromCookie()
-    .then(() => {
-      return this.getUserId();
-    })
-    .then(() => {
-      return this.$router.push({ name: "outflow" });
-    });
+
+    this.isMobileOrDesktop();
+
+    window.onresize = () => {
+      this.isMobileOrDesktop();
+    };
+
+    
   },
   components: {
     CalendarForm,
     CashFlow,
+    ReportsFormView,
   },
 };
 </script>
@@ -134,4 +190,16 @@ nav a.router-link-exact-active {
 .header {
   display: inline-flex;
 }
+
+.nomobile {
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 0px 0px 0px 0px;
+}
+
+.nomobile_item {
+  margin: 0px 40px 0px 0px;
+}
+
+
 </style>
