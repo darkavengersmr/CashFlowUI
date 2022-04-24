@@ -35,6 +35,7 @@ export default {
       liabilities: "liabilities",
       calendar: "calendar",
       categories: "categories",
+      isMobile: "isMobile",
     }),
     assets_filter: function () {
       let new_assets = [];
@@ -110,6 +111,10 @@ export default {
   },
   mounted() {
     this.setSelectedReport(11);
+    if (this.isMobile) {
+      this.refreshLiabilities();
+      this.refreshCategories();
+    }
   },
 };
 </script>
