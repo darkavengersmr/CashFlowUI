@@ -12,7 +12,7 @@ const routes = [
   {
     path: '/',
     name: 'root',
-    component: OutflowFormView
+    component: LoginFormView
   },
   {
     path: '/login',

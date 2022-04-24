@@ -8,7 +8,7 @@ export default createStore({
     return {
       isMobile: true,
       isDemo: false,
-      authorized: true,
+      authorized: false,
       loginOrRegistrationError: "",
       auth: {
         username: "",

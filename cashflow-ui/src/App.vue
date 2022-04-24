@@ -20,32 +20,32 @@
       ><span v-if="authorized"> | </span>
       <router-link v-if="authorized" to="/liabilities">Пассивы</router-link
       ><span v-if="authorized"> | </span>
-      <router-link v-if="authorized && isMobile" to="/reports">Отчеты</router-link
+      <router-link v-if="authorized && isMobile" to="/reports"
+        >Отчеты</router-link
       ><span v-if="authorized && isMobile"> | </span>
       <router-link v-if="authorized" to="/preferences">Профиль</router-link>
     </nav>
 
     <div v-if="!isMobile && authorized" class="nomobile">
       <div class="nomobile_item">
-      <router-view />
+        <router-view />
       </div>
       <div>
-        <ReportsFormView/>
+        <ReportsFormView />
       </div>
     </div>
 
     <div v-if="isMobile || !authorized">
       <router-view />
     </div>
-
-</div>
+  </div>
 </template>
 
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
 import CalendarForm from "./components/CalendarForm.vue";
 import CashFlow from "./components/CashFlow.vue";
-import ReportsFormView from './views/ReportsFormView.vue'
+import ReportsFormView from "./views/ReportsFormView.vue";
 
 export default {
   name: "App",
@@ -55,22 +55,15 @@ export default {
     this.setViewport();
 
     this.getTokenFromCookie()
-      .then((token) => {                
-        return this.getUserId(token);
-      })
-      .then(() => {      
-        this.refreshFlows();
-        this.refreshAssets();
-        this.refreshLiabilities();
-        this.refreshFlowsAll();
-        this.refreshCategories();
-        if (this.user.username == 'demo') {
-          this.setIsDemo(true);
-        }
-      })      
-       .then(() => {
-         return this.$router.push({ name: "outflow" });
-      });
+    .then((token) => {
+      if (token) {
+        return this.getUserId(token)
+      }
+      else {
+        throw new Error('Cookie not found');        
+      }
+    })
+    .catch(() => {return console.log("Cookie not found, please login")});
   },
   beforeUnmount() {
     window.removeEventListener("resize", this.setViewport);
@@ -94,6 +87,7 @@ export default {
   methods: {
     ...mapMutations({
       setAuthorized: "setAuthorized",
+      setToken: "setToken",
       setUserid: "setUserid",
       setIsMobile: "setIsMobile",
       setIsDemo: "setIsDemo",
@@ -119,18 +113,22 @@ export default {
         .setAttribute("content", viewportContent);
     },
     updateData() {
-      this.updatePeriod();
+      this.updatePeriod();      
       this.refreshFlows();
-      if (this.$route.path == "/assets") {
+      if (!this.isMobile) {
+        this.refreshAssets();
+        this.refreshLiabilities();
+      }
+      else if (this.$route.path == "/assets") {
         this.refreshAssets();
       }
       if (this.$route.path == "/liabilities") {
         this.refreshLiabilities();
       }
-      if (this.$route.path == "/preferences") {
+      if (this.$route.path == "/reports") {
         this.refreshAssets();
         this.refreshLiabilities();
-      }
+      }      
     },
     isMobileOrDesktop() {
       //this.setWindowinnerWidth(window.innerWidth);
@@ -146,21 +144,20 @@ export default {
           this.setIsMobile(true);
         } else {
           this.setIsMobile(false);
+          if (this.authorized) {
+            this.$router.push({ name: "outflow" });
+          }
         }
       }
     },
   },
   mounted() {
-
     this.setPeriod();
-
     this.isMobileOrDesktop();
 
     window.onresize = () => {
       this.isMobileOrDesktop();
     };
-
-    
   },
   components: {
     CalendarForm,
@@ -212,5 +209,4 @@ nav a.router-link-exact-active {
   background: #240000;
   margin: 0px 0px 10px 0px;
 }
-
 </style>

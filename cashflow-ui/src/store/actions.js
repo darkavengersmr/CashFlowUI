@@ -24,8 +24,15 @@ export default {
                         VueCookies.set("username", username, -1);
                         VueCookies.set("token", response.data.access_token, -1);
                         context.commit("setToken", response.data.access_token);
+
+                        context.dispatch("updatePeriod");
+                        context.dispatch("refreshFlows");
+                        
+                        if (username == "demo") {
+                          context.commit("setIsDemo", true);              
+                        }            
                     }
-                    router.push({ name: 'inflow' });
+                    router.push({ name: 'outflow' });
                     context.commit("setLoginOrRegistrationError", "");
                 }
             })
@@ -35,44 +42,60 @@ export default {
                 router.push({ name: 'login' });
             });
     },
-    async getTokenFromCookie(context) {
-        let token = '';
+    getTokenFromCookie(context) {
+        let token;
         if (this.state.auth.token == "") {
-            token = await VueCookies.get("token");
-            context.commit("setToken", token);
+            token = VueCookies.get("token");            
         }        
-        return token;
+        if (token) {
+            context.commit("setToken", token);            
+        }
+        return token
     },
     getUserId(context, token) {        
-        let result = api.readUserId(token).then((user) => {
+        return api.readUserId(token).then((user) => {
             context.commit("setUser", user.data);
-        });
-        return result;
+            
+            context.commit("setAuthorized", true);
+            context.dispatch("updatePeriod");
+            context.dispatch("refreshFlows");
+            
+            if (this.state.user.username == "demo") {
+              context.commit("setIsDemo", true);              
+            }            
+            router.push({ name: 'outflow' });
+
+            return user;               
+        }).catch((error) => error)      
     },
     getObj(context, { url, storepoint, params }) {
         if (this.state.user.id != undefined) {
-            api.readObject({ token: this.state.auth.token, user_id: this.state.user.id, url: url, params: params })
+            return api.readObject({ token: this.state.auth.token, user_id: this.state.user.id, url: url, params: params })
                 .then(response => {
                     context.commit(storepoint, response.data);
+                    return response;
                 })
                 .catch(error => {
                     if (error.response.status === 401) {
                         context.commit("setAuthorized", false);
                         router.push({ name: 'login' });
+                        return error;
                     }
                 });
         }
         else {
-            api.readUserId(this.state.auth.token).then((user) => {
+            return api.readUserId(this.state.auth.token).then((user) => {
                 context.commit("setUser", user.data);
                 return api.readObject({ token: this.state.auth.token, user_id: user.data.id, url: url, params: params })
             }).then(response => {
                 context.commit(storepoint, response.data);
+                return response;
             })
                 .catch(error => {
                     if (error.response.status === 401) {
                         context.commit("setAuthorized", false);
                         router.push({ name: 'login' });
+                        return error;
                     }
                 });
         }

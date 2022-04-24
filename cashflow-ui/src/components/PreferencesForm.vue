@@ -41,6 +41,7 @@ export default {
     exitBtn() {
       this.setIsDemo(false);
       this.setAuthorized(false);
+
       this.$router.push({ name: "login" });
     },
     reportBtn() {

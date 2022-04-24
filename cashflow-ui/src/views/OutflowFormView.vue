@@ -164,7 +164,7 @@ export default {
     },
   },
   mounted() {
-    this.setSelectedReport(4);
+    this.setSelectedReport(4);    
   },
 };
 </script>
