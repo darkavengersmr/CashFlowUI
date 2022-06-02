@@ -6,7 +6,6 @@ Frontend дл€ сервиса CashFlow ("ƒенежный поток").
 
 Backend здесь https://github.com/darkavengersmr/CashFlow
 
-
 –еализованы:
 - регистраци€ и авторизаци€
 - ведение доходов и расходов, с возможностью делать их регул€рными
@@ -17,3 +16,4 @@ Backend здесь https://github.com/darkavengersmr/CashFlow
 ![alt text](screenshots/ui1.jpg "CashFlowUI1")
 ![alt text](screenshots/ui2.jpg "CashFlowUI2")
 ![alt text](screenshots/ui3.jpg "CashFlowUI3")
+![alt text](screenshots/ui4.jpg "CashFlowUI4")
