@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div class="card">
     <div
       class="card_item"
@@ -51,7 +52,10 @@
         Добавить
       </button>
       <button v-if="btnUpdateIsActive" class="btn update" @click="updateFlow">
-        Изменить
+        Замена
+      </button>
+      <button v-if="btnUpdateIsActive" class="btn sum" @click="updateFlowWithAdd">
+        +
       </button>
       <button
         v-if="!btnAddIsActive && !btnUpdateIsActive"
@@ -119,7 +123,8 @@
         class="flowsum_item"
         @click="
           add_description = item.description;
-          add_sum = item.sum;
+          add_sum = '';
+          total_sum = item.sum;
           selected_flow_id = item.id;
           btnAddControl();
         "
@@ -198,6 +203,7 @@
       </button>
     </div>
   </vue-final-modal>
+</div>
 </template>
 
 <script>
@@ -228,6 +234,7 @@ export default {
     return {
       add_description: "",
       add_sum: "",
+      total_sum: "",
       repeat: false,
       mostPopularVisible: false,
       showModal: false,
@@ -351,6 +358,23 @@ export default {
         this.btnAddControl();
       }
     },
+    updateFlowWithAdd() {
+      if (this.add_description.length > 0 && this.add_sum !== 0 && this.total_sum > 0) {        
+        this.$emit("clickBtnUpdateFlow", {
+          description: this.add_description,
+          sum: parseInt(this.add_sum) + parseInt(this.total_sum),
+          id: this.selected_flow_id,
+        });
+        this.add_description = "";
+        this.add_sum = 0;
+        this.total_sum = 0;
+        this.selected_flow_id = null;
+        this.repeat = false;
+        this.mostPopularVisible = false;
+        this.$emit("refreshMostPopular");
+        this.btnAddControl();
+      }
+    },
     deleteFromFlow(id) {
       this.selected_flow_id = null;
       this.$emit("clickBtnDeleteFromFlow", {
@@ -400,11 +424,22 @@ export default {
   font-size: 16px;
   background: #010042;
   color: rgb(255, 255, 255);
-  width: 132px;
+  width: 82px;
   height: 32px;
   border-radius: 8px;
   padding: 0px;
   margin: 8px 0px 0px 0px;
+}
+
+.btn.sum {
+  font-size: 16px;
+  background: #004209;
+  color: rgb(255, 255, 255);
+  width: 48px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 0px;
+  margin: 8px 0px 0px 2px;
 }
 
 .btn.delete {
