@@ -13,6 +13,8 @@ Backend здесь https://github.com/darkavengersmr/CashFlow
 - возможность ввода, корректировки, удаления позиций
 - отчеты по динамике и структуре в разрезе каждой из категорий
 
+![alt text](cashflow-ui/screenshots/ui5.gif "CashFlowUI5")
+
 ![alt text](cashflow-ui/screenshots/ui1.jpg "CashFlowUI1")
 ![alt text](cashflow-ui/screenshots/ui2.jpg "CashFlowUI2")
 ![alt text](cashflow-ui/screenshots/ui3.jpg "CashFlowUI3")
